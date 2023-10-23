@@ -58,9 +58,17 @@ Each script requires specific HTTP headers to perform web requests successfully.
 
 ```python
 headers = {
-    # Define your HTTP headers here
-    # You can use a program like Insomnia to capture the headers required for web requests
+    "Content-Type": "application/x-www-form-urlencoded",
+    "authority": "example.com",
+    "accept": "application/json",
+    "accept-language": "en-US,en;q=0.9",
+    "cookie": "sessionid=YOUR_SECURE_SESSION_ID; other_cookie=ANOTHER_SECURE_COOKIE",
+    "dnt": "1",
+    "if-none-match": "A_UNIQUE_CACHE_IDENTIFIER",
+    "referer": "https://example.com/your-page",
+    "sec-ch-ua": "Browser_Version_Information",
 }
+
 ```
 ### run requests
 To run all the requests at once, just run the run_requests.py file in the root of the project.
