@@ -64,3 +64,10 @@ headers = {
 ### run requests
 To run all the requests at once, just run the run_requests.py file in the root of the project.
 Next run the run_databaseOperations.py file to get all the json info into a your postgresql database.
+
+# spotify api
+The last thing to do is to run th two files in the spotify folder.
+| file             | result                                                       |
+|-------------------|------------------------------------------------------------|
+| search_songs.py | Takes all the information from the genre_music, genre_songs tables and looks for matches on spotify. All the results are stored into the spotify_data_songs table. |
+| add_to_playlists.py | Makes genre specific playlists with all the data from the spotify_data_songs table. |
