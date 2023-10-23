@@ -65,7 +65,7 @@ headers = {
     "cookie": "sessionid=YOUR_SECURE_SESSION_ID; other_cookie=ANOTHER_SECURE_COOKIE",
     "dnt": "1",
     "if-none-match": "A_UNIQUE_CACHE_IDENTIFIER",
-    "referer": "https://example.com/your-page",
+    "referer": "https://hardwax.com/basic-channel/?page=1",
     "sec-ch-ua": "Browser_Version_Information",
 }
 
