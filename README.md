@@ -48,3 +48,19 @@ The `refresh_token.py` file is a script to help you generate a Spotify refresh t
 2. Run the `refresh_token.py` script. This will open a web browser, asking you to log in to Spotify and authorize your application.
 
 3. After authorizing, you will be redirected to a local server, and the script will print the refresh token to the console. Copy this token and paste it in the `REFRESH_TOKEN` field in your `config.py` file.
+
+## requests
+In the requests folder you will find a script for each genre. The script requests data from the hardwax api and outputs it in a json object. 
+
+### HTTP Headers Configuration
+Each script requires specific HTTP headers to perform web requests successfully. You need to define these headers at the beginning of each script. Use a tool like Insomnia to capture the necessary headers from your web interactions. Here is an example of how to set up the headers:
+
+```python
+headers = {
+    # Define your HTTP headers here
+    # You can use a program like Insomnia to capture the headers required for web requests
+}
+```
+### run requests
+To run all the requests at once, just run the run_requests.py file in the root of the project.
+Next run the run_databaseOperations.py file to get all the json info into a your postgresql database.
