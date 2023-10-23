@@ -7,6 +7,7 @@ The results can be found using the following link
 |-------------------|------------------------------------------------------------|
 | Playlist for Grime| [Listen on Spotify](https://open.spotify.com/playlist/1YIbBAiJbS2FwFOFNOY1M9?si=4db7022f993c4e97) |
 | Playlist for exclusives| [Listen on Spotify](https://open.spotify.com/playlist/3QTCit285mo6LMJDdEcpql?si=69831571da834c46) |
+| Playlist for essentials | [Liston on Spotify](https://open.spotify.com/playlist/297JjaNBOxKABsLem3lDxq?si=27f6e5468991437f) |
 
 ## Configuration Setup
 
