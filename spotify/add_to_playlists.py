@@ -243,12 +243,29 @@ def get_tracks_in_playlist(playlist_id, headers):
 def playlist_exists(genre, user_id, headers):
     """Check if a playlist with the given genre exists for the user."""
     url = f"https://api.spotify.com/v1/users/{user_id}/playlists"
-    response = get(url, headers=headers)
+    params = {"limit": 50}  # Spotify allows a maximum of 50 items per request
 
-    if response.status_code == 200:
-        for playlist in response.json().get("items", []):
-            if playlist.get("name") == f"Playlist for {genre}":
+    while url:
+        response = get(url, headers=headers, params=params)
+
+        if response.status_code != 200:
+            print(f"Error: Received status code {response.status_code}")
+            print(response.json())
+            return None
+
+        data = response.json()
+        for playlist in data.get("items", []):
+            if playlist.get("name").strip().lower() == f"playlist for {genre}".lower():
+                print(f"Found existing playlist for genre: {genre}")
                 return playlist.get("id")
+
+        # Spotify uses paging for large collections. Check if there's another page of playlists.
+        url = data.get("next")
+        if url:
+            print("Checking next page of playlists...")
+            time.sleep(1)  # To avoid hitting Spotify's rate limits
+
+    print(f"No existing playlist found for genre: {genre}")
     return None
 
 
