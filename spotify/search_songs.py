@@ -169,7 +169,11 @@ def create_spotify_data_table():
 
 
 def search_and_store_spotify_data(genre, artist, song, headers, album):
-    results = search_spotify("track", song, artist, headers)
+    # If artist is 'Various Artists', pass an empty string for artist parameter in search_spotify function
+    if artist.lower() == "various artists":
+        results = search_spotify("track", f"{song} album:{album}", "", headers)
+    else:
+        results = search_spotify("track", song, artist, headers)
 
     if not results:
         print(f"No match found for song '{song}' by artist '{artist}'.")
