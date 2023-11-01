@@ -27,34 +27,34 @@ conn = psycopg2.connect(
 print("Connected to database")
 cur = conn.cursor()
 genres = [
-    # "ambient",
-    # "basicChannel",
-    # "chicago",
-    # "collectors",
-    # "colundi",
-    # "detroit",
-    # "detroit_house",
-    # "digital",
-    # "disco",
-    # "drexciya",
-    # "drum_n_bass",
-    # "electro",
-    # "essentials",
-    # "exclusives",
+    "ambient",
+    "basicChannel",
+    "chicago",
+    "collectors",
+    "colundi",
+    "detroit",
+    "detroit_house",
+    "digital",
+    "disco",
+    "drexciya",
+    "drum_n_bass",
+    "electro",
+    "essentials",
+    "exclusives",
     "grime",
-    # "honestjons",
-    # "house",
-    # "irdial_discs",
-    # "last_week",
-    # "mego",
-    # "new_global_styles",
-    # "outernational",
-    # "reggae",
-    # "reissues",
-    # "surgeon",
-    # "techno",
-    # "this_week",
-    # "wave",
+    "honestjons",
+    "house",
+    "irdial_discs",
+    "last_week",
+    "mego",
+    "new_global_styles",
+    "outernational",
+    "reggae",
+    "reissues",
+    "surgeon",
+    "techno",
+    "this_week",
+    "wave",
 ]
 
 BATCH_SIZE = 100
@@ -241,67 +241,65 @@ def get_tracks_in_playlist(playlist_id, headers):
 
 
 def playlist_exists(genre, user_id, headers):
-    """Check if a playlist with the given genre exists for the user."""
     url = f"https://api.spotify.com/v1/users/{user_id}/playlists"
-    response = get(url, headers=headers)
+    params = {"limit": 50}
+    playlists = []
+    
+    while url:
+        response = get(url, headers=headers, params=params)
+        if response.status_code != 200:
+            print(f"Error: Received status code {response.status_code}")
+            print(response.json())
+            return playlists
+        
+        data = response.json()
+        for playlist in data.get("items", []):
+            if playlist.get("name").strip().lower() == f"playlist for {genre}".lower():
+                playlists.append(playlist.get("id"))
+        
+        url = data.get("next")
+        if url:
+            time.sleep(1)
 
-    if response.status_code == 200:
-        for playlist in response.json().get("items", []):
-            if playlist.get("name") == f"Playlist for {genre}":
-                return playlist.get("id")
-    return None
+    return playlists
 
 
-def add_tracks_to_playlist(playlist_id, track_ids, token, genre, batch_size=100):
-    # Define the endpoint URL
-    url = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks"
+
+def add_tracks_to_playlist(playlist_ids, track_ids, token, genre, batch_size=100):
     headers = get_auth_headers(token)
 
-    # Check the current number of tracks in the playlist
-    current_track_ids, _ = get_tracks_in_playlist(playlist_id, headers)
-    total_tracks = len(current_track_ids)
-
-    print(f"Starting with playlist {playlist_id} which has {total_tracks} tracks.")
-
-    # Split the track IDs into batches
-    for i in range(0, len(track_ids), batch_size):
-        batched_ids = track_ids[i : i + batch_size]
+    for playlist_id in playlist_ids:
+        current_track_ids, _ = get_tracks_in_playlist(playlist_id, headers)
+        total_tracks = len(current_track_ids)
         remaining_space = 11000 - total_tracks
 
-        print(f"Calculated remaining space: {remaining_space}")
-        print(f"Trying to add {len(batched_ids)} tracks.")
+        if remaining_space >= len(track_ids):
+            _add_tracks_to_single_playlist(playlist_id, track_ids, headers)
+            return
 
-        # If the current playlist is reaching its limit, create a new one
-        if len(batched_ids) > remaining_space:
-            print(
-                f"Playlist {playlist_id} is reaching its limit with {remaining_space} remaining space. Creating a new playlist."
-            )
-            playlist_id = create_playlist_for_genre(genre, token)
-            if not playlist_id:
-                print(
-                    "Failed to create a new playlist. Stopping the addition of tracks."
-                )
-                return
-            total_tracks = 0  # Reset the track count for the new playlist
-            url = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks"  # Update the URL for the new playlist
-            print(f"Switched to new playlist: {playlist_id}.")
+        _add_tracks_to_single_playlist(playlist_id, track_ids[:remaining_space], headers)
+        track_ids = track_ids[remaining_space:]
 
-        # Prepare the data for the request. Spotify expects the track URIs, not just IDs.
+    # If there are still tracks left, create new playlists and add the remaining tracks
+    while track_ids:
+        new_playlist_id = create_playlist_for_genre(genre, token)
+        if not new_playlist_id:
+            print("Failed to create a new playlist. Stopping the addition of tracks.")
+            return
+        playlist_ids.append(new_playlist_id)
+        _add_tracks_to_single_playlist(new_playlist_id, track_ids, headers)
+        track_ids = []
+
+def _add_tracks_to_single_playlist(playlist_id, track_ids, headers, batch_size=100):
+    url = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks"
+    for i in range(0, len(track_ids), batch_size):
+        batched_ids = track_ids[i:i + batch_size]
         data = {"uris": [f"spotify:track:{track_id}" for track_id in batched_ids]}
-
-        # Make the request
         response = post(url, headers=headers, json=data)
-
-        # Handle the response
         if response.status_code == 201:
-            total_tracks += len(batched_ids)
-            print(
-                f"Successfully added {len(batched_ids)} tracks to playlist {playlist_id}."
-            )
+            print(f"Successfully added {len(batched_ids)} tracks to playlist {playlist_id}.")
         else:
-            print(
-                f"Failed to add tracks to playlist {playlist_id}. Status code: {response.status_code}. Message: {response.text}."
-            )
+            print(f"Failed to add tracks to playlist {playlist_id}. Status code: {response.status_code}. Message: {response.text}.")
 
 
 def main():
