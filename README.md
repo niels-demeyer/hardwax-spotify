@@ -79,4 +79,4 @@ The last thing to do is to run th two files in the spotify folder.
 | file             | result                                                       |
 |-------------------|------------------------------------------------------------|
 | search_songs.py | Takes all the information from the genre_music, genre_songs tables and looks for matches on spotify. All the results are stored into the spotify_data_songs table. |
-| add_to_playlists.py | Makes genre specific playlists with all the data from the spotify_data_songs table. |
+| playlists.py | Makes genre specific playlists with all the data from the spotify_data_songs table. The tables are stored in a seperate database. The playlist_ids table consists of every id for each playlist.|
