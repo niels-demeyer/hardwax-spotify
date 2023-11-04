@@ -79,5 +79,5 @@ The last thing to do is to run th two files in the spotify folder.
 | file             | result                                                       |
 |-------------------|------------------------------------------------------------|
 | search_songs.py | Takes all the information from the genre_music, genre_songs tables and looks for matches on spotify. All the results are stored into the spotify_data_songs table. |
-| playlists.py | Makes genre specific playlists with all the data from the spotify_data_songs table. The tables are stored in a seperate database called hardwax_spotify. The playlist_ids table consists of every id for each playlist.|
+| playlist.py | Makes genre specific playlists with all the data from the spotify_data_songs table. The tables are stored in a seperate database called hardwax_spotify. The playlist_ids table consists of every id for each playlist.|
 | api.py | Gets all the information from the hardwax_spotify database and communicates this using the spotify api.
