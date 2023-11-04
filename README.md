@@ -6,7 +6,7 @@ The results can be found using the following link
 | playlist             | Link                                                       |
 |-------------------|------------------------------------------------------------|
 | Playlist for Ambient| [Listen on Spotify](https://open.spotify.com/playlist/501USvvcnXwYIpGUzthArM?si=95b9300ac5404bd1) |
-| Playlist for exclusives| [Listen on Spotify](https://open.spotify.com/playlist/3QTCit285mo6LMJDdEcpql?si=69831571da834c46) |
+| Playlist for Basic Channel| [Listen on Spotify](https://open.spotify.com/playlist/7iMFyCGsc7STunaoXPhTSQ) |
 | Playlist for essentials | [Listen on Spotify](https://open.spotify.com/playlist/297JjaNBOxKABsLem3lDxq?si=27f6e5468991437f) |
 
 ## Configuration Setup
