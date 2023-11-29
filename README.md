@@ -12,7 +12,7 @@ The results can be found using the following link
 ## Configuration Setup
 
 ### 1. Database Configuration
-Create a `config.py` file in your project root directory and configure the database connection parameters:
+Create a `.env` file in your project root directory and configure the database connection parameters:
 
 ```python
 # Database configuration
@@ -24,7 +24,7 @@ DB_PASSWORD = 'your_database_password'
 ```
 
 ### 2. Spotify Configuration
-In the same `config.py` file, set up the Spotify configuration parameters:
+In the same `.env` file, set up the Spotify configuration parameters:
 
 ```python
 # Spotify configuration
