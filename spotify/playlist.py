@@ -1,141 +1,206 @@
-import sys
 import os
+from dotenv import load_dotenv
+import pprint
 import psycopg2
+from psycopg2.extras import DictCursor
 
-# Adding the parent directory of the config module to the system path
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-from config import config
+# Load environment variables
+env_path = r"../config/.env"
+load_dotenv(dotenv_path=env_path)
 
+DB_USER = os.getenv("DB_USER")
+DB_PASS = os.getenv("DB_PASSWORD")
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT")
+DB_NAME = os.getenv("DB_NAME")
 
-def database_exists(cur, db_name):
-    """Check if a database exists."""
-    cur.execute("SELECT 1 FROM pg_database WHERE datname = %s;", (db_name,))
-    return cur.fetchone() is not None
+# Establish a connection to the database
+conn = psycopg2.connect(
+    database=DB_NAME,
+    user=DB_USER,
+    password=DB_PASS,
+    host=DB_HOST,
+    port=DB_PORT,
+)
 
-
-def create_database(cur, conn, db_name):
-    """Create a new PostgreSQL database."""
-    # Set the connection to autocommit mode
-    conn.autocommit = True
-
-    if not database_exists(cur, db_name):
-        cur.execute(f"CREATE DATABASE {db_name};")
-        print(f"Database {db_name} created successfully.")
-    else:
-        print(f"Database {db_name} already exists.")
-
-    # Reset the connection to its original autocommit state
-    conn.autocommit = False
+# Create a cursor using the DictCursor
+cursor = conn.cursor(cursor_factory=DictCursor)
 
 
-def fetch_all_genres(cur):
-    """Fetch all unique genres from the spotify_data_songs table."""
-    cur.execute("SELECT DISTINCT genre FROM spotify_data_songs;")
-    return [row[0] for row in cur.fetchall()]
+def select_all_from_table_as_dict(table_name):
+    # Execute a SQL query to select all records from the table
+    cursor.execute(f"SELECT * FROM {table_name}")
+
+    # Fetch all the records
+    records = cursor.fetchall()
+
+    # Return the fetched records
+    return records
 
 
-def fetch_data_by_genre(cur, genre, offset=0, limit=11000):
-    """Fetch data by genre with offset and limit."""
-    cur.execute(
-        """
-        SELECT genre, artist, song, album, artist_id, song_id, album_id 
-        FROM spotify_data_songs 
-        WHERE genre = %s 
-        LIMIT %s OFFSET %s;
-    """,
-        (genre, limit, offset),
-    )
-    return cur.fetchall()
+def select_distinct_genres(cursor, table_name="spotify_data_songs"):
+    # Execute a SQL query to select distinct genres from the table
+    cursor.execute(f"SELECT DISTINCT genre FROM {table_name}")
+
+    # Fetch all the records
+    records = cursor.fetchall()
+
+    # Extract the first element from each tuple and convert the list to a tuple
+    genres = tuple(record[0] for record in records)
+
+    # Return the fetched records
+    return genres
 
 
-def create_genre_table(cur, genre, counter):
-    """Create a new table for the genre with a counter."""
-    table_name = f"{genre}_{counter}"
-    cur.execute(
+def get_items_by_genre(genre, table_name="spotify_data_songs"):
+    # Execute a SQL query to select all records from the table
+    cursor.execute(f"SELECT * FROM {table_name} WHERE genre = '{genre}'")
+
+    # Fetch all the records
+    records = cursor.fetchall()
+
+    # Return the fetched records
+    return records
+
+
+def create_genre_tables(cursor, conn, genre):
+    # Replace hyphens with underscores in the genre name
+    genre = genre.replace("-", "_")
+
+    cursor.execute(
         f"""
-        CREATE TABLE IF NOT EXISTS {table_name} (
-            id SERIAL PRIMARY KEY,
-            genre VARCHAR(255),
-            artist VARCHAR(255),
-            song VARCHAR(255),
-            album VARCHAR(255),
-            artist_id VARCHAR(255),
-            song_id VARCHAR(255),
+        CREATE TABLE IF NOT EXISTS {genre} 
+        (
+            id SERIAL PRIMARY KEY, 
+            genre VARCHAR(255), 
+            artist VARCHAR(255), 
+            song VARCHAR(255), 
+            album VARCHAR(255), 
+            artist_id VARCHAR(255), 
+            song_id VARCHAR(255), 
             album_id VARCHAR(255),
-            UNIQUE(genre, artist, song)
-        );
-    """
+            UNIQUE(id, genre, artist, song)
+        )
+        """
     )
-    return table_name
+    conn.commit()
 
 
-def insert_data_into_genre_table(cur, table_name, data):
-    """Insert data into the genre table and ignore duplicates."""
-    cur.executemany(
-        f"""
-        INSERT INTO {table_name} (
-            genre, artist, song, album, artist_id, song_id, album_id
-        ) VALUES (%s, %s, %s, %s, %s, %s, %s)
-        ON CONFLICT (genre, artist, song) DO NOTHING;
-    """,
-        data,
+def insert_into_genre_tables(cursor, conn, genre, items):
+    # Replace hyphens with underscores in the genre name
+    genre = genre.replace("-", "_")
+
+    # Insert records into the table
+    for item in items:
+        cursor.execute(
+            f"""
+            INSERT INTO {genre}
+            (id, genre, artist, song, album, artist_id, song_id, album_id)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            ON CONFLICT (id, genre, artist, song) DO NOTHING
+            """,
+            tuple(item.values()),
+        )
+        conn.commit()
+
+
+def split_big_playlist(cursor, conn, genre):
+    genre = genre.replace("-", "_")
+    # select the count of records for the genre
+    cursor.execute(f"SELECT COUNT(*) FROM {genre}")
+    len_genre = cursor.fetchone()[0]
+    print(f"the length of {genre} is:", len_genre)
+    cursor.execute(f"SELECT * FROM {genre} ORDER BY id")
+    records = cursor.fetchall()
+
+    # establish a new connection to the "hardwax_spotify" database
+    new_conn = psycopg2.connect(
+        database="hardwax_spotify",
+        user=DB_USER,
+        password=DB_PASS,
+        host=DB_HOST,
+        port=DB_PORT,
     )
+    new_cursor = new_conn.cursor()
+    if len_genre > 11000:
+        splits = int(len_genre / 11000) + 1
+        print(f"the number of splits is: {splits}")
+        for i in range(splits):
+            split_records = records[i * 11000 : (i + 1) * 11000]
+            new_cursor.execute(
+                f"""
+                CREATE TABLE IF NOT EXISTS {genre}_{i} 
+                (
+                    id SERIAL PRIMARY KEY, 
+                    genre VARCHAR(255), 
+                    artist VARCHAR(255), 
+                    song VARCHAR(255), 
+                    album VARCHAR(255), 
+                    artist_id VARCHAR(255), 
+                    song_id VARCHAR(255), 
+                    album_id VARCHAR(255),
+                    UNIQUE(id, genre, artist, song)
+                )
+                """
+            )
+            new_conn.commit()
+            for record in split_records:
+                new_cursor.execute(
+                    f"""
+                    INSERT INTO {genre}_{i}
+                    (id, genre, artist, song, album, artist_id, song_id, album_id)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                    ON CONFLICT (id, genre, artist, song) DO NOTHING
+                    """,
+                    tuple(record),
+                )
+                new_conn.commit()
+    else:
+        print(f"the number of splits is: 1")
+        new_cursor.execute(
+            f"""
+            CREATE TABLE IF NOT EXISTS {genre}_0 
+            (
+                id SERIAL PRIMARY KEY, 
+                genre VARCHAR(255), 
+                artist VARCHAR(255), 
+                song VARCHAR(255), 
+                album VARCHAR(255), 
+                artist_id VARCHAR(255), 
+                song_id VARCHAR(255), 
+                album_id VARCHAR(255),
+                UNIQUE(id, genre, artist, song)
+            )
+            """
+        )
+        new_conn.commit()
+        for record in records:
+            new_cursor.execute(
+                f"""
+                INSERT INTO {genre}_0
+                (id, genre, artist, song, album, artist_id, song_id, album_id)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                ON CONFLICT (id, genre, artist, song) DO NOTHING
+                """,
+                tuple(record),
+            )
+            new_conn.commit()
 
 
-def main():
-    # Connect to the default database
-    default_conn = psycopg2.connect(
-        dbname=config.DB_NAME,
-        user=config.DB_USER,
-        password=config.DB_PASSWORD,
-        host=config.DB_HOST,
-        port=config.DB_PORT,
-    )
-    default_cur = default_conn.cursor()
-    print("Connected to the default database")
-
-    # Create new database or connect if it already exists
-    new_db_name = "hardwax_spotify"
-    create_database(default_cur, default_conn, new_db_name)
-
-    # Step 1: Fetch all genres from the default database
-    genres = fetch_all_genres(default_cur)
-
-    # Connect to the new database
-    new_db_conn = psycopg2.connect(
-        dbname=new_db_name,
-        user=config.DB_USER,
-        password=config.DB_PASSWORD,
-        host=config.DB_HOST,
-        port=config.DB_PORT,
-    )
-    new_db_cur = new_db_conn.cursor()
-    print(f"Connected to the database {new_db_name}")
-
-    # Step 2, 3, 4: For each genre, fetch the data and create tables as needed
+def main(cursor, conn):
+    # Select all records from the music_albums table
+    records = select_all_from_table_as_dict("spotify_data_songs")
+    genres = select_distinct_genres(cursor, "spotify_data_songs")
     for genre in genres:
-        offset = 0
-        counter = 1
-        while True:
-            data = fetch_data_by_genre(default_cur, genre, offset)
-            if not data:
-                break
-
-            table_name = create_genre_table(new_db_cur, genre, counter)
-            insert_data_into_genre_table(new_db_cur, table_name, data)
-
-            offset += 11000
-            counter += 1
-
-    new_db_conn.commit()
-    print("Data migration completed!")
-
-    # Close all cursors and connections
-    new_db_cur.close()
-    new_db_conn.close()
-    default_cur.close()
-    default_conn.close()
+        create_genre_tables(cursor, conn, genre)
+        items = get_items_by_genre(genre, "spotify_data_songs")
+        insert_into_genre_tables(cursor, conn, genre, items)
+        split_big_playlist(cursor, conn, genre)
 
 
 if __name__ == "__main__":
-    main()
+    main(cursor, conn)
+
+
+cursor.close()
+conn.close()

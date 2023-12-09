@@ -1,26 +1,32 @@
 import base64
 import json
 from requests import post, get, put
-import sys
-import os
 import psycopg2
-import urllib.parse
-import time
 import time
 from datetime import datetime
 from psycopg2 import sql
+from dotenv import load_dotenv
+import os
 
-# Adding the parent directory to the system path to access the config module
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+env_path = r"../config/.env"
+load_dotenv(env_path)
 
-from config import config
+DB_NAME = "hardwax_spotify"
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT")
+CLIENT_ID = os.getenv("CLIENT_ID")
+CLIENT_SECRET = os.getenv("CLIENT_SECRET")
+REFRESH_TOKEN = os.getenv("REFRESH_TOKEN")
+SPOTIFY_USERNAME = os.getenv("SPOTIFY_USERNAME")
 
 conn = psycopg2.connect(
-    dbname="hardwax_spotify",
-    user=config.DB_USER,
-    password=config.DB_PASSWORD,
-    host=config.DB_HOST,
-    port=config.DB_PORT,
+    dbname=DB_NAME,
+    user=DB_USER,
+    password=DB_PASSWORD,
+    host=DB_HOST,
+    port=DB_PORT,
 )
 
 
@@ -43,7 +49,7 @@ def get_auth_headers(token):
 
 def get_new_access_token(refresh_token):
     """Function to get a new access token using a refresh token."""
-    auth_string = config.CLIENT_ID + ":" + config.CLIENT_SECRET
+    auth_string = CLIENT_ID + ":" + CLIENT_SECRET
     auth_bytes = auth_string.encode("utf-8")
     auth_base64 = str(base64.b64encode(auth_bytes), "utf-8")
 
@@ -55,8 +61,8 @@ def get_new_access_token(refresh_token):
     data = {
         "grant_type": "refresh_token",
         "refresh_token": refresh_token,
-        "client_id": config.CLIENT_ID,
-        "client_secret": config.CLIENT_SECRET,
+        "client_id": CLIENT_ID,
+        "client_secret": CLIENT_SECRET,
     }
 
     response = post(url, headers=headers, data=data)
@@ -68,14 +74,14 @@ def get_token():
     """Function to get an access token either by refresh token or client credentials."""
     try:
         # First, try to get a new access token using the refresh token
-        token = get_new_access_token(config.REFRESH_TOKEN)
+        token = get_new_access_token(REFRESH_TOKEN)
         if token:
             print("Token acquired using refresh token.")
             return token
 
         # If failed, fall back to client credentials flow
         print("Attempting to get Spotify token using client credentials...")
-        auth_string = config.CLIENT_ID + ":" + config.CLIENT_SECRET
+        auth_string = CLIENT_ID + ":" + CLIENT_SECRET
         auth_bytes = auth_string.encode("utf-8")
         auth_base64 = str(base64.b64encode(auth_bytes), "utf-8")
 
@@ -109,8 +115,8 @@ def get_table_names(conn):
     with conn.cursor() as cursor:
         cursor.execute(
             """
-            SELECT table_name 
-            FROM information_schema.tables 
+            SELECT table_name
+            FROM information_schema.tables
             WHERE table_schema='public' AND table_catalog='hardwax_spotify' AND table_name != 'playlist_ids'
             """
         )
@@ -260,7 +266,7 @@ def create_spotify_playlist(genre, token):
     :return: The Spotify playlist ID
     """
     # Define the Spotify API endpoint for creating a new playlist
-    url = f"https://api.spotify.com/v1/users/{config.SPOTIFY_USERNAME}/playlists"
+    url = f"https://api.spotify.com/v1/users/{SPOTIFY_USERNAME}/playlists"
 
     # Define the headers including the authorization token
     headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
@@ -326,20 +332,6 @@ def create_and_store_playlists(cur, genres, token):
 
 
 def main():
-    # Database connection
-    try:
-        conn = psycopg2.connect(
-            dbname="hardwax_spotify",
-            user=config.DB_USER,
-            password=config.DB_PASSWORD,
-            host=config.DB_HOST,
-            port=config.DB_PORT,
-        )
-        print("Connected to database")
-    except Exception as e:
-        print(f"Error connecting to database: {e}")
-        return
-
     # Ensure the necessary table exists
     ensure_playlist_table_exists(conn)
 

@@ -9,7 +9,7 @@ from fuzzywuzzy import fuzz
 from typing import List, Optional, Dict, Any
 import pprint
 
-env_path = "your path to .env file"
+env_path = r"../config/.env"
 load_dotenv(env_path)
 
 DB_NAME = os.getenv("DB_NAME")
@@ -31,36 +31,36 @@ conn = psycopg2.connect(
 print("Connected to database")
 cur = conn.cursor()
 
-genres = [
-    "ambient",
-    "basicChannel",
-    "chicago",
-    "collectors",
-    "colundi",
-    "detroit",
-    "detroit_house",
-    "digital",
-    "disco",
-    "drexciya",
-    "drum_n_bass",
-    "electro",
-    "essentials",
-    "exclusives",
-    "grime",
-    "honestjons",
-    "house",
-    "irdial_discs",
-    "last_week",
-    "mego",
-    "new_global_styles",
-    "outernational",
-    "reggae",
-    "reissues",
-    "surgeon",
-    "techno",
-    "this_week",
-    "wave",
-]
+# genres = [
+#     "ambient",
+#     "basicChannel",
+#     "chicago",
+#     "collectors",
+#     "colundi",
+#     "detroit",
+#     "detroit_house",
+#     "digital",
+#     "disco",
+#     "drexciya",
+#     "drum_n_bass",
+#     "electro",
+#     "essentials",
+#     "exclusives",
+#     "grime",
+#     "honestjons",
+#     "house",
+#     "irdial_discs",
+#     "last_week",
+#     "mego",
+#     "new_global_styles",
+#     "outernational",
+#     "reggae",
+#     "reissues",
+#     "surgeon",
+#     "techno",
+#     "this_week",
+#     "wave",
+# ]
 
 
 def get_auth_headers(token):
@@ -148,16 +148,53 @@ def ensure_spotify_data_table_exists():
         print(f"Error in ensuring table exists: {e}")
 
 
-def get_genre_music(cur):
+###the old way
+# def get_genre_music(cur):
+#     try:
+#         cur.execute(
+#             """
+#             SELECT genre, artist, project_title, track
+#             FROM all_results
+#             ORDER BY genre, artist, project_title, track
+#             """
+#         )
+#         genre_music = cur.fetchall()
+#         return genre_music
+#     except Exception as e:
+#         print(f"Error in getting genre music: {e}")
+
+
+def get_music_albums(cur):
     try:
         cur.execute(
             """
-            SELECT genre, artist, project_title, track
-            FROM all_results
-            ORDER BY genre, artist, project_title, track
+            SELECT genre, artist, album, track
+            FROM music_albums
+            ORDER BY genre, artist, album, track
             """
         )
         genre_music = cur.fetchall()
+        return genre_music
+    except Exception as e:
+        print(f"Error in getting genre music: {e}")
+
+
+def get_genre_music_albums(cur, genre):
+    # # Replace hyphens with underscores in the genre name
+    # genre = genre.replace("-", "_")
+    try:
+        cur.execute(
+            """
+            SELECT genre, artist, album, track
+            FROM music_albums
+            WHERE genre = %s
+            ORDER BY genre, artist, album, track
+            """,
+            (genre,),
+        )
+        genre_music = cur.fetchall()
+        print(f"Genre music: {len(genre_music)}")
+
         return genre_music
     except Exception as e:
         print(f"Error in getting genre music: {e}")
@@ -193,35 +230,84 @@ def get_not_results(cur):
         print(f"Error in getting not results: {e}")
 
 
-def get_unique_genre_music(cur, genres):
-    # Existing function calls
-    genre_music_list = get_genre_music(cur)
-    spotify_data_songs = get_spotify_data_songs(cur)
-    not_results_list = get_not_results(cur)
+def create_not_results_table(cur, conn):
+    try:
+        print("Attempting to create not_results table...")
+        create_table_query = """
+        CREATE TABLE IF NOT EXISTS not_results (
+            id SERIAL PRIMARY KEY,
+            genre VARCHAR(255),
+            artist VARCHAR(255),
+            song VARCHAR(255),
+            UNIQUE(genre, artist, song)
+        );
+        """
+        cur.execute(create_table_query)
+        conn.commit()
+        print("Table not_results ensured to exist successfully")
+    except Exception as e:
+        print(f"Error in creating table: {e}")
 
-    print(f"Genre music list: {len(genre_music_list)}")
-    print(f"Spotify data songs: {len(spotify_data_songs)}")
-    print(f"Not results list: {len(not_results_list)}")
 
-    # Convert spotify_data_songs to a set of (album, song) for faster lookup
-    spotify_data_songs_set = set((song[2], song[3]) for song in spotify_data_songs)
-    not_results_set = set((song[1], song[2]) for song in not_results_list)
+# def get_unique_genre_music(cur, genres, specific_genre=None):
+#     # Existing function calls
+#     genre_music_list = get_genre_music(cur)
+#     spotify_data_songs = get_spotify_data_songs(cur)
+#     not_results_list = get_not_results(cur)
 
-    unique_genre_music = []
-    unique_not_results = []
+#     print(f"Genre music list: {len(genre_music_list)}")
+#     print(f"Spotify data songs: {len(spotify_data_songs)}")
+#     print(f"Not results list: {len(not_results_list)}")
 
-    # Check each item in genre_music_list for unique (album, song) combination
-    for song in genre_music_list:
-        album_song_pair = (song[2], song[3])
-        if album_song_pair not in spotify_data_songs_set:
-            unique_genre_music.append(song)
+#     # Convert spotify_data_songs to a set of (album, song) for faster lookup
+#     spotify_data_songs_set = set((song[2], song[3]) for song in spotify_data_songs)
+#     not_results_set = set((song[1], song[2]) for song in not_results_list)
 
-    for song in unique_genre_music:
-        album_song_pair = (song[1], song[3])
-        if album_song_pair not in not_results_set:
-            unique_not_results.append(song)
+#     unique_genre_music = []
+#     unique_not_results = []
 
-    return unique_not_results
+#     # Check each item in genre_music_list for unique (album, song) combination
+#     for song in genre_music_list:
+#         album_song_pair = (song[2], song[3])
+#         if album_song_pair not in spotify_data_songs_set:
+#             unique_genre_music.append(song)
+
+#     for song in unique_genre_music:
+#         album_song_pair = (song[1], song[3])
+#         if album_song_pair not in not_results_set:
+#             unique_not_results.append(song)
+
+#     return unique_not_results
+
+
+def get_unique_genre_music(cur, genre=None):
+    try:
+        # Existing function calls
+        if genre:
+            music_albums = set(get_genre_music_albums(cur, genre))
+        else:
+            music_albums = set(get_music_albums(cur))
+        spotify_data_songs = set(get_spotify_data_songs(cur))
+        not_results_set = set(get_not_results(cur))
+
+        print(f"Music albums: {len(music_albums)}")
+        print(f"Spotify data songs: {len(spotify_data_songs)}")
+        print(f"Not results list: {len(not_results_set)}")
+        print(f"First music album: {next(iter(music_albums), 'No music albums')}")
+        print(
+            f"First Spotify data song: {next(iter(spotify_data_songs), 'No Spotify data songs')}"
+        )
+        print(f"First not result: {next(iter(not_results_set), 'No not results')}")
+
+        unique_music_albums = music_albums - spotify_data_songs - not_results_set
+        print(f"Unique music albums: {len(unique_music_albums)}")
+        if unique_music_albums:
+            print(
+                f"First unique music album: {next(iter(unique_music_albums), 'No unique music albums')}"
+            )
+        return unique_music_albums
+    except Exception as e:
+        print(f"Error in getting unique genre music: {e}")
 
 
 def search_spotify(item_type, query, artist_name, headers):
@@ -389,6 +475,7 @@ def search_and_store_spotify_data(genre, artist, song, headers, album):
             print(f"Duplicate entry detected: {genre}, {artist}, {song}. Skipping.")
     else:
         print(f"No matching artist-song combination found for {artist} - {song}")
+        not_results(genre, artist, song)
 
 
 def calculate_similarity(source: str, target: str) -> int:
@@ -462,7 +549,7 @@ def main():
             print("Could not obtain token. Exiting...")
             return
         headers = get_auth_headers(token)
-        get_unique_genre_music_list = get_unique_genre_music(cur, genres)
+        get_unique_genre_music_list = get_unique_genre_music(cur)
         print(f"Unique genre music list: {len(get_unique_genre_music_list)}")
         for unique in get_unique_genre_music_list:
             genre = unique[0]
