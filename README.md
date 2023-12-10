@@ -63,7 +63,7 @@ for spider in $(scrapy list); do scrapy crawl $spider; done
 ```
 
 # spotify api
-The last thing to do is to run th two files in the spotify folder.
+The last thing to do is to run the files in the spotify folder.
 | file             | result                                                       |
 |-------------------|------------------------------------------------------------|
 | search_songs.py | Takes all the information from the genre_music, genre_songs tables and looks for matches on spotify. All the results are stored into the spotify_data_songs table. |
