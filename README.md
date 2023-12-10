@@ -2,12 +2,7 @@
 This project aims to scrape all the music data from [Hardwax](https://hardwax.com) and create genre-based playlists on Spotify.
 
 # results
-The results can be found using the following link 
-| playlist             | Link                                                       |
-|-------------------|------------------------------------------------------------|
-| Playlist for Ambient| [Listen on Spotify](https://open.spotify.com/playlist/501USvvcnXwYIpGUzthArM?si=95b9300ac5404bd1) |
-| Playlist for Basic Channel| [Listen on Spotify](https://open.spotify.com/playlist/7iMFyCGsc7STunaoXPhTSQ) |
-| Playlist for Chicago | [Listen on Spotify](https://open.spotify.com/playlist/70EuT3wWsySwrqJXNCshOV) |
+The results can be found using the following link [Listen on Spotify](https://open.spotify.com/user/ur5o8bnri7ytv1sigoq2rkgt2/playlists)
 
 ## Configuration Setup
 
