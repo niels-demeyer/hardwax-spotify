@@ -70,9 +70,13 @@ headers = {
 }
 
 ```
-### run requests
-To run all the requests at once, just run the run_requests.py file in the root of the project.
-Next run the run_databaseOperations.py file to get all the json info into a your postgresql database.
+### scrapy 
+In the hardwax folder you can find a scrapy project that will scrape all the data for you. Simply run all the spiders.
+
+#### comand for powershell 
+```
+foreach ($spider in (scrapy list)) { scrapy crawl $spider }
+```
 
 # spotify api
 The last thing to do is to run th two files in the spotify folder.
