@@ -50,32 +50,16 @@ The `refresh_token.py` file is a script to help you generate a Spotify refresh t
 
 3. After authorizing, you will be redirected to a local server, and the script will print the refresh token to the console. Copy this token and paste it in the `REFRESH_TOKEN` field in your `config.py` file.
 
-## requests
-In the requests folder you will find a script for each genre. The script requests data from the hardwax api and outputs it in a json object. 
-
-### HTTP Headers Configuration
-Each script requires specific HTTP headers to perform web requests successfully. You need to define these headers at the beginning of each script. Use a tool like Insomnia to capture the necessary headers from your web interactions. Here is an example of how to set up the headers:
-
-```python
-headers = {
-    "Content-Type": "application/x-www-form-urlencoded",
-    "authority": "example.com",
-    "accept": "application/json",
-    "accept-language": "en-US,en;q=0.9",
-    "cookie": "sessionid=YOUR_SECURE_SESSION_ID; other_cookie=ANOTHER_SECURE_COOKIE",
-    "dnt": "1",
-    "if-none-match": "A_UNIQUE_CACHE_IDENTIFIER",
-    "referer": "https://hardwax.com/basic-channel/?page=1",
-    "sec-ch-ua": "Browser_Version_Information",
-}
-
-```
 ### scrapy 
 In the hardwax folder you can find a scrapy project that will scrape all the data for you. Simply run all the spiders.
 
-#### comand for powershell 
+#### command for powershell 
 ```
 foreach ($spider in (scrapy list)) { scrapy crawl $spider }
+```
+#### command for bash
+```
+for spider in $(scrapy list); do scrapy crawl $spider; done
 ```
 
 # spotify api
