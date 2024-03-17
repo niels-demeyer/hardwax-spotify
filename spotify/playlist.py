@@ -4,9 +4,8 @@ import pprint
 import psycopg2
 from psycopg2.extras import DictCursor
 
-# Load environment variables
-env_path = r"../config/.env"
-load_dotenv(dotenv_path=env_path)
+
+load_dotenv()
 
 DB_USER = os.getenv("DB_USER")
 DB_PASS = os.getenv("DB_PASSWORD")

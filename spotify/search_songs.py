@@ -9,8 +9,8 @@ from fuzzywuzzy import fuzz
 from typing import List, Optional, Dict, Any
 import pprint
 
-env_path = r"../config/.env"
-load_dotenv(env_path)
+
+load_dotenv()
 
 DB_NAME = os.getenv("DB_NAME")
 DB_USER = os.getenv("DB_USER")
@@ -30,7 +30,6 @@ conn = psycopg2.connect(
 
 print("Connected to database")
 cur = conn.cursor()
-
 
 
 def get_auth_headers(token):
@@ -118,7 +117,6 @@ def ensure_spotify_data_table_exists():
         print(f"Error in ensuring table exists: {e}")
 
 
-
 def get_music_albums(cur):
     try:
         cur.execute(
@@ -200,8 +198,6 @@ def create_not_results_table(cur, conn):
         print("Table not_results ensured to exist successfully")
     except Exception as e:
         print(f"Error in creating table: {e}")
-
-
 
 
 def get_unique_genre_music(cur, genre=None):

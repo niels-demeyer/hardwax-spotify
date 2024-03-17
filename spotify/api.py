@@ -8,8 +8,7 @@ from psycopg2 import sql
 from dotenv import load_dotenv
 import os
 
-env_path = r"../config/.env"
-load_dotenv(env_path)
+load_dotenv()
 
 DB_NAME = "hardwax_spotify"
 DB_USER = os.getenv("DB_USER")
