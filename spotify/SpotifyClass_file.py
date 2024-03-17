@@ -23,6 +23,13 @@ class SpotifyClass:
         self.dbpassword = os.getenv("DB_PASSWORD")
         self.dbhost = os.getenv("DB_HOST")
         self.dbport = os.getenv("DB_PORT")
+        self.conn = psycopg2.connect(
+            dbname=self.dbname,
+            user=self.dbuser,
+            password=self.dbpassword,
+            host=self.dbhost,
+            port=self.dbport,
+        )
         # load the environment variables for the spotify api
         self.client_id = os.getenv("CLIENT_ID")
         self.client_secret = os.getenv("CLIENT_SECRET")
