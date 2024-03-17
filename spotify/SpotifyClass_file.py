@@ -39,6 +39,8 @@ class SpotifyClass:
         # api varialbes
         self.token = self.get_access_token()
         print("Spotify token acquired")
+        self.headers = self.get_headers()
+        print("Spotify headers acquired")
 
     # Functions to get the access token
     def get_access_token(self):
@@ -75,3 +77,10 @@ class SpotifyClass:
 
         except Exception as e:
             print(f"Error in getting token: {e}")
+
+    # Function to get the headers
+    def get_headers(self):
+        return {
+            "Authorization": f"Bearer {self.token}",
+            "Content-Type": "application/json",
+        }
