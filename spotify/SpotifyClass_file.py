@@ -129,6 +129,27 @@ class SpotifyClass:
         else:
             return False
 
+    def ensure_spotify_data_table_exists(self):
+        try:
+            print("Ensuring spotify_data_songs table exists...")
+            with self.conn.cursor(cursor_factory=DictCursor) as cur:
+                cur.execute(
+                    """
+                    SELECT EXISTS (
+                        SELECT FROM information_schema.tables 
+                        WHERE table_name = 'spotify_data_songs'
+                    );
+                    """
+                )
+                result = cur.fetchone()
+                if result[0]:
+                    print("Table spotify_data_songs exists")
+                    return True
+                else:
+                    self.create_spotify_data_table()
+        except Exception as e:
+            print(f"Error in ensuring table exists: {e}")
+
     def create_spotify_data_table(self):
         try:
             print("Attempting to create spotify_data_songs table...")
