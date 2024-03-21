@@ -184,3 +184,18 @@ class SpotifyClass:
                     seen_albums.add(album_name)
         except Exception as e:
             print(f"Error in making unique music albums: {e}")
+
+    def search_album(self, album_name: str, artist_name: str) -> Dict[str, Any]:
+        """
+        Search for an album on Spotify by its name and artist, and return all its tracks.
+        """
+        results = self.sp.search(
+            q=f"album:{album_name} artist:{artist_name}", type="album"
+        )
+        items = results["albums"]["items"]
+        if len(items) > 0:
+            album = items[0]
+            tracks = self.sp.album_tracks(album["id"])
+            return tracks["items"]
+        else:
+            return None
