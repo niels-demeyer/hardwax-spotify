@@ -35,8 +35,8 @@ class SpotifyClass:
         print("Database connected")
 
         # load the environment variables for the spotipy library
-        self.spotipy_client_id = os.getenv("SPOTIPY_CLIENT_ID")
-        self.spotipy_client_secret = os.getenv("SPOTIPY_CLIENT_SECRET")
+        self.spotipy_client_id = os.getenv("SPOTIPY_CLIENT")
+        self.spotipy_client_secret = os.getenv("SPOTIPY_SECRET")
         self.auth_manager = SpotifyClientCredentials(
             client_id=self.spotipy_client_id, client_secret=self.spotipy_client_secret
         )
@@ -47,6 +47,16 @@ class SpotifyClass:
         self.music_albums_unique = None
         self.music_albums_all = None
         self.spotify_response = []
+
+    def search_artist(self, artist_name: str) -> Dict[str, Any]:
+        """
+        Search for an artist on Spotify.
+        """
+        try:
+            result = self.sp.search(q=artist_name, type="artist")
+            return result
+        except Exception as e:
+            print(f"Error in searching artist: {e}")
 
     def damerau_levenshtein_distance(self, s1, s2):
         """
