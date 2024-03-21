@@ -44,6 +44,7 @@ class SpotifyClass:
 
         # Define the variables
         self.spotify_data_songs = None
+        self.music_albums = None
 
     # Functions to get the access token
     def get_access_token(self):
@@ -178,16 +179,22 @@ class SpotifyClass:
         Get the data from the songs table in the database.
         """
         try:
-            with self.conn.cursor(cursor_factory=DictCursor) as cur:
-                cur.execute(
-                    sql.SQL(
-                        """
-                        SELECT genre, artist, album, song
-                        FROM spotify_data_songs
-                        ORDER BY genre, artist, album, song
-                        """
-                    )
-                )
-                self.spotify_data_songs = cur.fetchall()
+            cur = self.conn.cursor()
+            cur.execute("SELECT * FROM spotify_data_songs")
+            self.spotify_data_songs = cur.fetchall()
         except Exception as e:
-            print(f"Error in getting spotify data: {e}")
+            print(f"Error in getting spotify data songs: {e}")
+
+    def get_music_albums(self):
+        """
+        Get the data from the albums table in the database.
+        """
+        try:
+            cur = self.conn.cursor()
+            cur.execute("SELECT * FROM music_albums")
+            colnames = [desc[0] for desc in cur.description]
+            rows = cur.fetchall()
+            self.music_albums = [dict(zip(colnames, row)) for row in rows]
+            return self.music_albums
+        except Exception as e:
+            print(f"Error in getting music albums: {e}")
