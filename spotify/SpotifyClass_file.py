@@ -46,7 +46,12 @@ class SpotifyClass:
         self.spotify_data_songs = None
         self.music_albums_unique = None
         self.music_albums_all = None
-        self.spotify_response = []
+
+        # Ensure the table exists and get the data
+        self.ensure_spotify_data_table_exists()
+        self.spotify_data_songs = self.get_spotify_data_songs()
+        self.music_albums_all = self.get_music_albums()
+        self.make_unique_music_albums()
 
     def search_artist(self, artist_name: str) -> Dict[str, Any]:
         """
