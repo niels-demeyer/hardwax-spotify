@@ -42,6 +42,9 @@ class SpotifyClass:
         self.headers = self.get_headers()
         print("Spotify headers acquired")
 
+        # Define the variables
+        self.spotify_data_songs = None
+
     # Functions to get the access token
     def get_access_token(self):
         try:
@@ -125,3 +128,45 @@ class SpotifyClass:
             return True
         else:
             return False
+
+    def create_spotify_data_table(self):
+        try:
+            print("Attempting to create spotify_data_songs table...")
+            create_table_query = """
+            CREATE TABLE IF NOT EXISTS spotify_data_songs (
+                id SERIAL PRIMARY KEY,
+                genre VARCHAR(255),
+                artist VARCHAR(255),
+                song VARCHAR(255),
+                album VARCHAR(255),
+                artist_id VARCHAR(255),
+                song_id VARCHAR(255),
+                album_id VARCHAR(255),
+                UNIQUE(genre, artist, song)
+            );
+            """
+            with self.conn.cursor() as cur:
+                cur.execute(create_table_query)
+            self.conn.commit()
+            print("Table spotify_data_songs ensured to exist successfully")
+        except Exception as e:
+            print(f"Error in creating table: {e}")
+
+    def get_spotify_data_songs(self):
+        """
+        Get the data from the songs table in the database.
+        """
+        try:
+            with self.conn.cursor(cursor_factory=DictCursor) as cur:
+                cur.execute(
+                    sql.SQL(
+                        """
+                        SELECT genre, artist, album, song
+                        FROM spotify_data_songs
+                        ORDER BY genre, artist, album, song
+                        """
+                    )
+                )
+                self.spotify_data_songs = cur.fetchall()
+        except Exception as e:
+            print(f"Error in getting spotify data: {e}")

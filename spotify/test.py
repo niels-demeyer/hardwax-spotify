@@ -1,5 +1,6 @@
 from SpotifyClass_file import SpotifyClass
 
 spotify = SpotifyClass()
-is_similar = spotify.are_strings_similar("hello", "helo", 1)
-print(is_similar)
+spotify.create_spotify_data_table()
+# spotify_data_songs = spotify.get_spotify_data_songs()
+# print(spotify_data_songs)
