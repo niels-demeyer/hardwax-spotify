@@ -45,7 +45,7 @@ class SpotifyClass:
         # Define the variables
         self.spotify_data_songs = None
         self.music_albums_unique = None
-        self.music_albums_all = self.get_music_albums()
+        self.music_albums_all = None
         self.spotify_response = []
 
     # Functions to get the access token
@@ -200,6 +200,21 @@ class SpotifyClass:
             return self.music_albums_all
         except Exception as e:
             print(f"Error in getting music albums: {e}")
+
+    def make_unique_music_albums(self):
+        """
+        Make the music albums unique.
+        """
+        try:
+            self.music_albums_unique = []
+            seen_albums = set()
+            for album in self.music_albums_all:
+                album_name = album["album"]
+                if album_name not in seen_albums:
+                    self.music_albums_unique.append(album)
+                    seen_albums.add(album_name)
+        except Exception as e:
+            print(f"Error in making unique music albums: {e}")
 
     def search_spotify(self):
         base_url = "https://api.spotify.com/v1/search"
