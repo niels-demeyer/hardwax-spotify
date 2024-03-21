@@ -190,10 +190,7 @@ class SpotifyClass:
             album = music_album["album"]
             artist = music_album["artist"]
             results = self.sp.search(q=f"album:{album} artist:{artist}", type="album")
-            items = results["albums"]["items"]
-            if len(items) > 0:
-                album = items[0]
-                tracks = self.sp.album_tracks(album["id"])
-                return tracks["items"]
-            else:
-                return None
+            print(results)
+
+        else:
+            return None
