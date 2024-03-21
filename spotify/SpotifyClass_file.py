@@ -43,15 +43,9 @@ class SpotifyClass:
         self.sp = spotipy.Spotify(auth_manager=self.auth_manager)
 
         # Define the variables
-        self.spotify_data_songs = None
-        self.music_albums_unique = None
-        self.music_albums_all = None
-
-        # Ensure the table exists and get the data
-        self.ensure_spotify_data_table_exists()
-        self.spotify_data_songs = self.get_spotify_data_songs()
-        self.music_albums_all = self.get_music_albums()
-        self.make_unique_music_albums()
+        self.spotify_data_songs = []
+        self.music_albums_all = []
+        self.music_albums_unique = []
 
     def search_artist(self, artist_name: str) -> Dict[str, Any]:
         """
@@ -168,7 +162,8 @@ class SpotifyClass:
             cur.execute("SELECT * FROM music_albums")
             colnames = [desc[0] for desc in cur.description]
             rows = cur.fetchall()
-            self.music_albums_all = [dict(zip(colnames, row)) for row in rows]
+            for row in rows:
+                self.music_albums_all.append(dict(zip(colnames, row)))
             return self.music_albums_all
         except Exception as e:
             print(f"Error in getting music albums: {e}")
@@ -178,9 +173,8 @@ class SpotifyClass:
         Make the music albums unique.
         """
         try:
-            self.music_albums_unique = []
             # test one item for now
-            self.music_albums_all = self.music_albums_all[:1]
+            music_albums_all = self.music_albums_all[:1]
             seen_albums = set()
             for album in self.music_albums_all:
                 album_name = album["album"]
