@@ -193,6 +193,17 @@ class SpotifyClass:
             results = self.sp.search(q=f"album:{album} artist:{artist}", type="album")
             print(f"Searching for album: {album} by {artist}")
             self.album_results.append(results)
+            self.save_to_json()
 
         else:
             return None
+
+    def save_to_json(self):
+        """
+        Save the album results to a JSON file.
+        """
+        try:
+            with open("album_results.json", "w") as f:
+                json.dump(self.album_results, f, indent=4)
+        except Exception as e:
+            print(f"Error in saving to JSON: {e}")
