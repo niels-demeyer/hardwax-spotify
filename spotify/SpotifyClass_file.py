@@ -173,8 +173,6 @@ class SpotifyClass:
         Make the music albums unique.
         """
         try:
-            # test one item for now
-            music_albums_all = self.music_albums_all[:1]
             seen_albums = set()
             for album in self.music_albums_all:
                 album_name = album["album"]
@@ -184,17 +182,18 @@ class SpotifyClass:
         except Exception as e:
             print(f"Error in making unique music albums: {e}")
 
-    def search_album(self, album_name: str, artist_name: str) -> Dict[str, Any]:
+    def search_album(self) -> Dict[str, Any]:
         """
         Search for an album on Spotify by its name and artist, and return all its tracks.
         """
-        results = self.sp.search(
-            q=f"album:{album_name} artist:{artist_name}", type="album"
-        )
-        items = results["albums"]["items"]
-        if len(items) > 0:
-            album = items[0]
-            tracks = self.sp.album_tracks(album["id"])
-            return tracks["items"]
-        else:
-            return None
+        for music_album in self.music_albums_unique:
+            album = music_album["album"]
+            artist = music_album["artist"]
+            results = self.sp.search(q=f"album:{album} artist:{artist}", type="album")
+            items = results["albums"]["items"]
+            if len(items) > 0:
+                album = items[0]
+                tracks = self.sp.album_tracks(album["id"])
+                return tracks["items"]
+            else:
+                return None
