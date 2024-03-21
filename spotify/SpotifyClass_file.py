@@ -207,6 +207,8 @@ class SpotifyClass:
         """
         try:
             self.music_albums_unique = []
+            # test one item for now
+            self.music_albums_all = self.music_albums_all[:1]
             seen_albums = set()
             for album in self.music_albums_all:
                 album_name = album["album"]
@@ -215,57 +217,3 @@ class SpotifyClass:
                     seen_albums.add(album_name)
         except Exception as e:
             print(f"Error in making unique music albums: {e}")
-
-    def search_spotify(self):
-        base_url = "https://api.spotify.com/v1/search"
-        delay = 0.5
-        max_delay = 60
-        max_retries = 5
-
-        for album in self.music_albums_unique:
-            item_type = "album"
-            query = album["album"]
-            artist_name = album["artist"]
-            headers = self.headers
-
-            params = {
-                "q": f"{query} artist:{artist_name}",
-                "type": item_type,
-                "limit": 5,
-            }
-
-            retries = 0
-            while retries < max_retries:
-                response = get(base_url, headers=headers, params=params)
-
-                if response.status_code == 200:
-                    print(f"Successfully searched for {item_type} '{query}' on Spotify")
-                    try:
-                        data = response.json()
-                        print(data)
-
-                    except json.JSONDecodeError:
-                        raise ValueError(
-                            "Error decoding Spotify's JSON response. Might not be JSON format."
-                        )
-
-                elif response.status_code == 429:
-                    wait_time = int(response.headers.get("Retry-After", delay))
-                    print(f"Rate limited! Waiting for {wait_time} seconds...")
-                    time.sleep(wait_time)
-                    delay = wait_time
-
-                elif response.status_code in [400, 401, 404]:
-                    raise ValueError(f"Error {response.status_code}: {response.text}")
-
-                else:
-                    retries += 1
-                    print(
-                        f"Error searching for {item_type} '{query}' on Spotify: {response.status_code}. Retrying in {delay} seconds..."
-                    )
-                    time.sleep(delay)
-                    delay = min(max_delay, delay * 2)
-
-            raise ValueError(
-                f"Aborted search for {item_type} '{query}' after reaching max retries."
-            )
