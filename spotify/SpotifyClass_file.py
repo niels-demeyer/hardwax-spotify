@@ -46,6 +46,7 @@ class SpotifyClass:
         self.spotify_data_songs = []
         self.music_albums_all = []
         self.music_albums_unique = []
+        self.album_results = []
 
     def search_artist(self, artist_name: str) -> Dict[str, Any]:
         """
@@ -190,7 +191,8 @@ class SpotifyClass:
             album = music_album["album"]
             artist = music_album["artist"]
             results = self.sp.search(q=f"album:{album} artist:{artist}", type="album")
-            print(results)
+            print(f"Searching for album: {album} by {artist}")
+            self.album_results.append(results)
 
         else:
             return None
