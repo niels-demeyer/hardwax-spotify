@@ -133,7 +133,7 @@ class SpotifyClass:
                 track VARCHAR(255),
                 album_uri VARCHAR(255),
                 artist_uri VARCHAR(255),
-                UNIQUE(id, artist, song)
+                UNIQUE(id, artist, track)
             );
             """
             with self.conn.cursor() as cur:
