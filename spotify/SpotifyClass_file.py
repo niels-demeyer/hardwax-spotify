@@ -214,9 +214,12 @@ class SpotifyClass:
                             "artist_uri": artist_uri,
                         }
                         self.album_results.append(music_album_with_uri)
+                        print(f"Album found: {album} by {artist}")
                         self.save_to_database()
                     else:
                         self.album_results.append(music_album)
+                        print(f"Album not found: {album} by {artist}")
+                        self.save_to_database()
                     break
                 except spotipy.exceptions.SpotifyException as e:
                     if e.http_status == 429:
@@ -244,25 +247,26 @@ class SpotifyClass:
         try:
             with self.conn.cursor() as cur:
                 for album in self.album_results:
-                    if "album_uri" in album and "artist_uri" in album:
-                        cur.execute(
-                            sql.SQL(
-                                """
-                                INSERT INTO spotify_data_songs (artist, label, label_issue, genre, track, album_uri, artist_uri)
-                                VALUES (%s, %s, %s, %s, %s, %s, %s)
-                                ON CONFLICT (id) DO NOTHING;
-                                """
-                            ),
-                            (
-                                album["artist"],
-                                album["label"],
-                                album["label_issue"],
-                                album["genre"],
-                                album["track"],
-                                album["album_uri"],
-                                album["artist_uri"],
-                            ),
-                        )
+                    artist_uri = album.get("artist_uri", None)
+                    album_uri = album.get("album_uri", None)
+                    cur.execute(
+                        sql.SQL(
+                            """
+                            INSERT INTO spotify_data_songs (artist, label, label_issue, genre, track, album_uri, artist_uri)
+                            VALUES (%s, %s, %s, %s, %s, %s, %s)
+                            ON CONFLICT (id) DO NOTHING;
+                            """
+                        ),
+                        (
+                            album["artist"],
+                            album["label"],
+                            album["label_issue"],
+                            album["genre"],
+                            album["track"],
+                            album_uri,
+                            artist_uri,
+                        ),
+                    )
                 self.conn.commit()
         except Exception as e:
             print(f"Error in saving to database: {e}")
