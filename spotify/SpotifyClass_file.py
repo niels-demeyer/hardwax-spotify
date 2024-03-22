@@ -238,6 +238,7 @@ class SpotifyClass:
         for music_album in self.music_albums_unique:
             album = music_album["album"]
             artist = music_album["artist"]
+            album_id = music_album["id"]  # assuming your dictionary includes the id
             while True:
                 try:
                     results = self.sp.search(
@@ -254,13 +255,14 @@ class SpotifyClass:
                         }
                         self.album_results.append(music_album_with_uri)
                         print(f"Album found: {album} by {artist}")
-                        # self.save_to_database()
-                        self.save_to_json()
+                        self.save_to_database()
+                        # self.save_to_json()
                     else:
                         self.album_results.append(music_album)
                         print(f"Album not found: {album} by {artist}")
                         self.save_to_database()
-                        self.save_to_json()
+                        # self.save_to_json()
+                    self.update_checked_status(album_id)
                     break
                 except spotipy.exceptions.SpotifyException as e:
                     if e.http_status == 429:
@@ -269,7 +271,22 @@ class SpotifyClass:
                         continue
                     else:
                         print(f"Error occurred while searching for album: {e}")
-                        break
+
+    def update_checked_status(self, album_id):
+        """
+        Update the checked status of an album in the music_albums_unique table
+        """
+        try:
+            cur = self.conn.cursor()
+            cur.execute(
+                """
+                UPDATE music_albums_unique SET checked = True WHERE id = %s
+                """,
+                (album_id,),
+            )
+            self.conn.commit()
+        except Exception as e:
+            print("Error in update_checked_status:", e)
 
     def save_to_json(self):
         """
@@ -290,6 +307,10 @@ class SpotifyClass:
                 for album in self.album_results:
                     artist_uri = album.get("artist_uri", None)
                     album_uri = album.get("album_uri", None)
+                    label = album.get("label", None)
+                    label_issue = album.get("label_issue", None)
+                    genre = album.get("genre", None)
+                    track = album.get("track", None)
                     cur.execute(
                         sql.SQL(
                             """
@@ -300,10 +321,10 @@ class SpotifyClass:
                         ),
                         (
                             album["artist"],
-                            album["label"],
-                            album["label_issue"],
-                            album["genre"],
-                            album["track"],
+                            label,
+                            label_issue,
+                            genre,
+                            track,
                             album_uri,
                             artist_uri,
                         ),
