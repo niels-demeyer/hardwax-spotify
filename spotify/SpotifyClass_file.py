@@ -126,14 +126,14 @@ class SpotifyClass:
             create_table_query = """
             CREATE TABLE IF NOT EXISTS spotify_data_songs (
                 id SERIAL PRIMARY KEY,
-                genre VARCHAR(255),
                 artist VARCHAR(255),
-                song VARCHAR(255),
-                album VARCHAR(255),
-                artist_id VARCHAR(255),
-                song_id VARCHAR(255),
-                album_id VARCHAR(255),
-                UNIQUE(genre, artist, song)
+                label VARCHAR(255),
+                label_issue VARCHAR(255),
+                genre VARCHAR(255),
+                track VARCHAR(255),
+                album_uri VARCHAR(255),
+                artist_uri VARCHAR(255),
+                UNIQUE(id, artist, song)
             );
             """
             with self.conn.cursor() as cur:
@@ -193,9 +193,12 @@ class SpotifyClass:
             results = self.sp.search(q=f"album:{album} artist:{artist}", type="album")
             print(f"Searching for album: {album} by {artist}")
             if results["albums"]["items"]:
+                album_uri = results["albums"]["items"][0]["uri"]
+                artist_uri = results["albums"]["items"][0]["artists"][0]["uri"]
                 music_album_with_uri = {
                     **music_album,
-                    "uri": results["albums"]["items"][0]["uri"],
+                    "album_uri": album_uri,
+                    "artist_uri": artist_uri,
                 }
                 self.album_results.append(music_album_with_uri)
                 self.save_to_json()

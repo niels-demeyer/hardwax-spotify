@@ -7,7 +7,8 @@
         "label_issue": "LP 003",
         "genre": "ambient",
         "track": "Intro",
-        "uri": "spotify:album:1q3VhyuDHZPregPKaxsR7D"
+        "album_uri": "spotify:album:1q3VhyuDHZPregPKaxsR7D",
+        "artist_uri": "spotify:artist:1QqNj74PYVbZMYOYQaUxn5"
     },
     {
         "id": 15,
@@ -17,7 +18,8 @@
         "label_issue": "008",
         "genre": "ambient",
         "track": "Kirenga",
-        "uri": "spotify:album:1pCWW7N0H7IdB6YPZkESXU"
+        "album_uri": "spotify:album:1pCWW7N0H7IdB6YPZkESXU",
+        "artist_uri": "spotify:artist:0HjrUqNrQSfPLaTX0Me9vV"
     },
     {
         "id": 23,
@@ -54,7 +56,8 @@
         "label_issue": "007",
         "genre": "ambient",
         "track": "The Clock (Remastered)",
-        "uri": "spotify:album:56jbZoWVv4uneCeais9AFV"
+        "album_uri": "spotify:album:56jbZoWVv4uneCeais9AFV",
+        "artist_uri": "spotify:artist:6AdRO941ZEDh4GHcCUdEs4"
     },
     {
         "id": 54,
@@ -64,7 +67,8 @@
         "label_issue": "202",
         "genre": "ambient",
         "track": "Open (2024 Remaster)",
-        "uri": "spotify:album:7ka54dL2dGi3WdKNpDnX2d"
+        "album_uri": "spotify:album:7ka54dL2dGi3WdKNpDnX2d",
+        "artist_uri": "spotify:artist:4EyeZbKRJj7sOA0R2AfdKF"
     },
     {
         "id": 58,
@@ -74,7 +78,8 @@
         "label_issue": "028",
         "genre": "ambient",
         "track": "Unother",
-        "uri": "spotify:album:7sYiiE8J3sHHCALicu6MUU"
+        "album_uri": "spotify:album:7sYiiE8J3sHHCALicu6MUU",
+        "artist_uri": "spotify:artist:0VkQxm6BXV8KqEFmUpg5Lu"
     },
     {
         "id": 74,
@@ -93,7 +98,8 @@
         "label_issue": "001",
         "genre": "ambient",
         "track": "Traverse",
-        "uri": "spotify:album:7paBuSgmJB9zFGg91gJTI6"
+        "album_uri": "spotify:album:7paBuSgmJB9zFGg91gJTI6",
+        "artist_uri": "spotify:artist:4WmdmK9wvEhtRChA2ko9Sr"
     },
     {
         "id": 87,
@@ -103,7 +109,8 @@
         "label_issue": "002",
         "genre": "ambient",
         "track": "Seams",
-        "uri": "spotify:album:3wXE7jZRVBY74j16eR69qq"
+        "album_uri": "spotify:album:3wXE7jZRVBY74j16eR69qq",
+        "artist_uri": "spotify:artist:4WmdmK9wvEhtRChA2ko9Sr"
     },
     {
         "id": 91,
@@ -113,7 +120,8 @@
         "label_issue": "007",
         "genre": "ambient",
         "track": "Unda Part I",
-        "uri": "spotify:album:2Ucc66CrCwUzESf7KFSRYs"
+        "album_uri": "spotify:album:2Ucc66CrCwUzESf7KFSRYs",
+        "artist_uri": "spotify:artist:5qbXOiqkhAk2GEvpkma7xj"
     },
     {
         "id": 95,
@@ -123,7 +131,8 @@
         "label_issue": "Osmosis010",
         "genre": "ambient",
         "track": "Nuevos Entendimientos",
-        "uri": "spotify:album:0kaiqLMVpcjJ1XnYhRBEoO"
+        "album_uri": "spotify:album:0kaiqLMVpcjJ1XnYhRBEoO",
+        "artist_uri": "spotify:artist:0hu7MAvgkplMeMcX9QMjn7"
     },
     {
         "id": 122868,
@@ -133,7 +142,8 @@
         "label_issue": "011",
         "genre": "electronica",
         "track": "Rozay",
-        "uri": "spotify:album:6E2vNKH4h0Q3D2TmmFjb7u"
+        "album_uri": "spotify:album:6E2vNKH4h0Q3D2TmmFjb7u",
+        "artist_uri": "spotify:artist:6mn2ONB3nDmPl1tT0YLPfa"
     },
     {
         "id": 99,
@@ -143,7 +153,8 @@
         "label_issue": "Osmosis011",
         "genre": "ambient",
         "track": "Animus",
-        "uri": "spotify:album:5SAvOWjv4j03BebKge6op4"
+        "album_uri": "spotify:album:5SAvOWjv4j03BebKge6op4",
+        "artist_uri": "spotify:artist:0hu7MAvgkplMeMcX9QMjn7"
     },
     {
         "id": 102,
@@ -153,7 +164,8 @@
         "label_issue": "Osmosis012",
         "genre": "ambient",
         "track": "Algoritmo Interior Activado",
-        "uri": "spotify:album:1CyFoXa2v9htZq7HOPQU1R"
+        "album_uri": "spotify:album:1CyFoXa2v9htZq7HOPQU1R",
+        "artist_uri": "spotify:artist:0hu7MAvgkplMeMcX9QMjn7"
     },
     {
         "id": 105,
@@ -163,7 +175,8 @@
         "label_issue": "028",
         "genre": "ambient",
         "track": "Velluto",
-        "uri": "spotify:album:5VDhlo398SCiqC5XSoPUDl"
+        "album_uri": "spotify:album:5VDhlo398SCiqC5XSoPUDl",
+        "artist_uri": "spotify:artist:2LmP2eHIAmprDBQfi4jiBC"
     },
     {
         "id": 117,
@@ -173,7 +186,8 @@
         "label_issue": "OTK 3",
         "genre": "ambient",
         "track": "Non Believer",
-        "uri": "spotify:album:1lKGWnOWANV9a6vp9FfXbg"
+        "album_uri": "spotify:album:1lKGWnOWANV9a6vp9FfXbg",
+        "artist_uri": "spotify:artist:6yvENIf7GmNwYnspB8UCpB"
     },
     {
         "id": 127,
@@ -183,7 +197,8 @@
         "label_issue": "045",
         "genre": "ambient",
         "track": "I Know You're Here",
-        "uri": "spotify:album:5aYn1Q50RPtHWf97O3Wt7i"
+        "album_uri": "spotify:album:5aYn1Q50RPtHWf97O3Wt7i",
+        "artist_uri": "spotify:artist:16xZ9dx7FhyK68gDskeweF"
     },
     {
         "id": 139,
@@ -193,7 +208,8 @@
         "label_issue": "014",
         "genre": "ambient",
         "track": "Feedback TT",
-        "uri": "spotify:album:3br7jnNybAsBRKZcQ8cYca"
+        "album_uri": "spotify:album:3br7jnNybAsBRKZcQ8cYca",
+        "artist_uri": "spotify:artist:4nDIRB3WZRZ40uSmZG0q6J"
     },
     {
         "id": 155,
@@ -203,7 +219,8 @@
         "label_issue": "144",
         "genre": "ambient",
         "track": "Kid For Today",
-        "uri": "spotify:album:2U2WNneO3RdYEASjRI2OZx"
+        "album_uri": "spotify:album:2U2WNneO3RdYEASjRI2OZx",
+        "artist_uri": "spotify:artist:2VAvhf61GgLYmC6C8anyX1"
     },
     {
         "id": 159,
@@ -213,7 +230,8 @@
         "label_issue": "LP 231",
         "genre": "ambient",
         "track": "A1",
-        "uri": "spotify:album:79gsc0Z6Zk7K3y0xMhuuYf"
+        "album_uri": "spotify:album:79gsc0Z6Zk7K3y0xMhuuYf",
+        "artist_uri": "spotify:artist:7MSUfLeTdDEoZiJPDSBXgi"
     },
     {
         "id": 163,
@@ -223,7 +241,8 @@
         "label_issue": "ABLKD08",
         "genre": "ambient",
         "track": "COncept 0907 2",
-        "uri": "spotify:album:3cTs2EaDfnlqJkcREPhWpA"
+        "album_uri": "spotify:album:3cTs2EaDfnlqJkcREPhWpA",
+        "artist_uri": "spotify:artist:4gugSyBqUNz0kon4Fm5i1E"
     },
     {
         "id": 166,
@@ -233,7 +252,8 @@
         "label_issue": "BDNLP016",
         "genre": "ambient",
         "track": "CELL/BODY",
-        "uri": "spotify:album:58wWpgmDdw3komKoUpZf50"
+        "album_uri": "spotify:album:58wWpgmDdw3komKoUpZf50",
+        "artist_uri": "spotify:artist:0KaZaa7Wi0YfUVOlzg8WbM"
     },
     {
         "id": 174,
@@ -279,7 +299,8 @@
         "label_issue": "094",
         "genre": "ambient",
         "track": "April Fools' Day",
-        "uri": "spotify:album:5VNb2OirG8V1pNLvXhg9VK"
+        "album_uri": "spotify:album:5VNb2OirG8V1pNLvXhg9VK",
+        "artist_uri": "spotify:artist:6mVIepilotsPjD4ZmlFtE5"
     },
     {
         "id": 220,
@@ -289,7 +310,8 @@
         "label_issue": "LP 014",
         "genre": "ambient",
         "track": "Ginger",
-        "uri": "spotify:album:2dt8WtyEyqJY0rTOUEMgEV"
+        "album_uri": "spotify:album:2dt8WtyEyqJY0rTOUEMgEV",
+        "artist_uri": "spotify:artist:4zOEbGsiNi7qGWdyDv43gx"
     },
     {
         "id": 242,
@@ -299,7 +321,8 @@
         "label_issue": "040",
         "genre": "ambient",
         "track": "Meccano",
-        "uri": "spotify:album:5zampteQ8wridsIc1jU4pu"
+        "album_uri": "spotify:album:5zampteQ8wridsIc1jU4pu",
+        "artist_uri": "spotify:artist:5gdvIKIFREcJmy3LV6yhBh"
     },
     {
         "id": 274,
@@ -309,7 +332,8 @@
         "label_issue": "059",
         "genre": "ambient",
         "track": "Inside The Egg",
-        "uri": "spotify:album:4ysdhWlJQEhsCJDzkeixpz"
+        "album_uri": "spotify:album:4ysdhWlJQEhsCJDzkeixpz",
+        "artist_uri": "spotify:artist:5gdvIKIFREcJmy3LV6yhBh"
     },
     {
         "id": 292,
@@ -319,7 +343,8 @@
         "label_issue": "066",
         "genre": "ambient",
         "track": "Nits De La Sultana",
-        "uri": "spotify:album:46JQVqJpOg8opDLUl1qHT1"
+        "album_uri": "spotify:album:46JQVqJpOg8opDLUl1qHT1",
+        "artist_uri": "spotify:artist:0LyfQWJT6nXafLPZqxe9Of"
     },
     {
         "id": 306,
@@ -329,7 +354,8 @@
         "label_issue": "Rev 009 LP",
         "genre": "ambient",
         "track": "Anima A",
-        "uri": "spotify:album:5CrhplWNA4KJy6tpoyfF93"
+        "album_uri": "spotify:album:5CrhplWNA4KJy6tpoyfF93",
+        "artist_uri": "spotify:artist:5E3H2KyR31E2Dj3K6vIUe9"
     },
     {
         "id": 311,
@@ -339,7 +365,8 @@
         "label_issue": "507",
         "genre": "ambient",
         "track": "Aerosons (1982)",
-        "uri": "spotify:album:6wgQDP8O2HNTDQVH8pNetL"
+        "album_uri": "spotify:album:6wgQDP8O2HNTDQVH8pNetL",
+        "artist_uri": "spotify:artist:7lP4hvWCUmZMsvy6sLvQpZ"
     },
     {
         "id": 315,
@@ -358,7 +385,8 @@
         "label_issue": "LP 018",
         "genre": "ambient",
         "track": "Respawn",
-        "uri": "spotify:album:4aXaGwcgGVXJzZ26gljhnP"
+        "album_uri": "spotify:album:4aXaGwcgGVXJzZ26gljhnP",
+        "artist_uri": "spotify:artist:4DvfXMNhZb0fDhJmgn2r11"
     },
     {
         "id": 347,
@@ -368,7 +396,8 @@
         "label_issue": "LP 002",
         "genre": "ambient",
         "track": "Latibule",
-        "uri": "spotify:album:0Q82rUsr5PdlyCGeMfQG7g"
+        "album_uri": "spotify:album:0Q82rUsr5PdlyCGeMfQG7g",
+        "artist_uri": "spotify:artist:3SGSgtJUXqS2PZofUIgC5J"
     },
     {
         "id": 367,
@@ -378,7 +407,8 @@
         "label_issue": "XXIII",
         "genre": "ambient",
         "track": "Excerpt 1",
-        "uri": "spotify:album:2e1RWVqgeWNtGVgyuOtc7C"
+        "album_uri": "spotify:album:2e1RWVqgeWNtGVgyuOtc7C",
+        "artist_uri": "spotify:artist:6IW76sJ0SzZo0iXZTqwt5o"
     },
     {
         "id": 384,
@@ -388,7 +418,8 @@
         "label_issue": "BDNX008",
         "genre": "ambient",
         "track": "Dawn Eternal",
-        "uri": "spotify:album:7LLsVeJHPnVYhVv4tEV5lr"
+        "album_uri": "spotify:album:7LLsVeJHPnVYhVv4tEV5lr",
+        "artist_uri": "spotify:artist:5Apzrhjj3VAm5h42w5EkCM"
     },
     {
         "id": 385,
@@ -398,7 +429,8 @@
         "label_issue": "010",
         "genre": "ambient",
         "track": "Ab Initio (Pax Edit)",
-        "uri": "spotify:album:0GBleBFmRh2S3P3R7cggOC"
+        "album_uri": "spotify:album:0GBleBFmRh2S3P3R7cggOC",
+        "artist_uri": "spotify:artist:0LyfQWJT6nXafLPZqxe9Of"
     },
     {
         "id": 419,
@@ -408,7 +440,8 @@
         "label_issue": "LP 017",
         "genre": "ambient",
         "track": "Kalpol Introl",
-        "uri": "spotify:album:3uQcFgoUvMlfYKy7GUPRXf"
+        "album_uri": "spotify:album:3uQcFgoUvMlfYKy7GUPRXf",
+        "artist_uri": "spotify:artist:6WH1V41LwGDGmlPUhSZLHO"
     },
     {
         "id": 430,
@@ -427,7 +460,8 @@
         "label_issue": "LTNC024",
         "genre": "ambient",
         "track": "March-like, Wild (Moritz von Oswald Variation)",
-        "uri": "spotify:album:75gYAOyi2zedwsKvdcxqnF"
+        "album_uri": "spotify:album:75gYAOyi2zedwsKvdcxqnF",
+        "artist_uri": "spotify:artist:4PWX2fYVnAH1ZQb49eu80Z"
     },
     {
         "id": 440,
@@ -437,7 +471,8 @@
         "label_issue": "016",
         "genre": "ambient",
         "track": "I, II, III",
-        "uri": "spotify:album:1WPBLgD8nhFiIHxkyshkaZ"
+        "album_uri": "spotify:album:1WPBLgD8nhFiIHxkyshkaZ",
+        "artist_uri": "spotify:artist:22BnY7crs6Mej4s0Fi9R1f"
     },
     {
         "id": 452,
@@ -456,7 +491,8 @@
         "label_issue": "003 LP",
         "genre": "ambient",
         "track": "CPR-12*",
-        "uri": "spotify:album:08cOb38i74Oq44wyqqlHm9"
+        "album_uri": "spotify:album:08cOb38i74Oq44wyqqlHm9",
+        "artist_uri": "spotify:artist:5blZUSGq0z7HhuSldSXV3a"
     },
     {
         "id": 467,
@@ -466,7 +502,8 @@
         "label_issue": "030",
         "genre": "ambient",
         "track": "Once Upon a Time in Yazd",
-        "uri": "spotify:album:7pmB2STLti4DBeYVLneKw7"
+        "album_uri": "spotify:album:7pmB2STLti4DBeYVLneKw7",
+        "artist_uri": "spotify:artist:2DE8lNNzW5bjdHNkn2sPCU"
     },
     {
         "id": 483,
@@ -494,7 +531,8 @@
         "label_issue": "039",
         "genre": "ambient",
         "track": "Sonic Stripes",
-        "uri": "spotify:album:4COxUd1pylhAsW19aOKjcV"
+        "album_uri": "spotify:album:4COxUd1pylhAsW19aOKjcV",
+        "artist_uri": "spotify:artist:4ZoNNYYJZlSj5MhqqsFhhC"
     },
     {
         "id": 527,
@@ -504,7 +542,8 @@
         "label_issue": "011",
         "genre": "ambient",
         "track": "6AM (Iris Mix)",
-        "uri": "spotify:album:6xVlRIV4dfG9HxtEbiN4Ut"
+        "album_uri": "spotify:album:6xVlRIV4dfG9HxtEbiN4Ut",
+        "artist_uri": "spotify:artist:1vjWJg4BeeTL5Y7NrFH8Wj"
     },
     {
         "id": 535,
@@ -514,7 +553,8 @@
         "label_issue": "022",
         "genre": "ambient",
         "track": "Ronpchi",
-        "uri": "spotify:album:2dZ4PzloNP6kuApH6WRdK8"
+        "album_uri": "spotify:album:2dZ4PzloNP6kuApH6WRdK8",
+        "artist_uri": "spotify:artist:1bvMkEwyURFPl2eDGZieUm"
     },
     {
         "id": 545,
@@ -524,7 +564,8 @@
         "label_issue": "6000",
         "genre": "ambient",
         "track": "Moto Verse",
-        "uri": "spotify:album:2diDpno1K39g7HtGkPWiTe"
+        "album_uri": "spotify:album:2diDpno1K39g7HtGkPWiTe",
+        "artist_uri": "spotify:artist:20bB5IFRjHw1EIAHvZ3tgd"
     },
     {
         "id": 565,
@@ -534,7 +575,8 @@
         "label_issue": "002",
         "genre": "ambient",
         "track": "Fantas",
-        "uri": "spotify:album:2wcVvjGwKFPtVV8Ggn5dkm"
+        "album_uri": "spotify:album:2wcVvjGwKFPtVV8Ggn5dkm",
+        "artist_uri": "spotify:artist:61WgG5fz5ilJrMne7tE1zu"
     },
     {
         "id": 577,
@@ -544,7 +586,8 @@
         "label_issue": "023",
         "genre": "ambient",
         "track": "Ambianta IV",
-        "uri": "spotify:album:37wIJYZoXUlBLWTZiiS6SP"
+        "album_uri": "spotify:album:37wIJYZoXUlBLWTZiiS6SP",
+        "artist_uri": "spotify:artist:3fifybKFLHwKbEjATG02ig"
     },
     {
         "id": 599,
@@ -554,7 +597,8 @@
         "label_issue": "012",
         "genre": "ambient",
         "track": "Far Above The Ground",
-        "uri": "spotify:album:5bCwMoVIC9bF5rrdZZLnFQ"
+        "album_uri": "spotify:album:5bCwMoVIC9bF5rrdZZLnFQ",
+        "artist_uri": "spotify:artist:0LyfQWJT6nXafLPZqxe9Of"
     },
     {
         "id": 619,
@@ -564,7 +608,8 @@
         "label_issue": "Osmosis009",
         "genre": "ambient",
         "track": "The Scenery of Forlornness",
-        "uri": "spotify:album:0U9GyqSqqBRO1wFRj0qLRi"
+        "album_uri": "spotify:album:0U9GyqSqqBRO1wFRj0qLRi",
+        "artist_uri": "spotify:artist:1rbPYgBG7xEiwzLzg009Y3"
     },
     {
         "id": 623,
@@ -574,7 +619,8 @@
         "label_issue": "146",
         "genre": "ambient",
         "track": "d\u00e9j\u00e0 r\u00eav\u00e9",
-        "uri": "spotify:album:54Lf42vPUgjc11OKJJRESL"
+        "album_uri": "spotify:album:54Lf42vPUgjc11OKJJRESL",
+        "artist_uri": "spotify:artist:6JOZsxwBJZm4bhcEy7gLIU"
     },
     {
         "id": 637,
@@ -584,7 +630,8 @@
         "label_issue": "Y19TH",
         "genre": "ambient",
         "track": "Dub Sottomarino",
-        "uri": "spotify:album:1dp33SiXKxcTs2MYOBRHHy"
+        "album_uri": "spotify:album:1dp33SiXKxcTs2MYOBRHHy",
+        "artist_uri": "spotify:artist:4m4ywwSd3EtlfquQLUHnyW"
     },
     {
         "id": 657,
@@ -594,7 +641,8 @@
         "label_issue": "002",
         "genre": "ambient",
         "track": "Parent I (with Thea Soti)",
-        "uri": "spotify:album:6jp4vJYTUzqE3JChyKEoHo"
+        "album_uri": "spotify:album:6jp4vJYTUzqE3JChyKEoHo",
+        "artist_uri": "spotify:artist:2MAgVhupzlIsudOOk9ntt7"
     },
     {
         "id": 659,
@@ -604,7 +652,8 @@
         "label_issue": "WAST 002 LP",
         "genre": "ambient",
         "track": "The White Arcades",
-        "uri": "spotify:album:4dYNNHW2lybWJTrWGdxhdN"
+        "album_uri": "spotify:album:4dYNNHW2lybWJTrWGdxhdN",
+        "artist_uri": "spotify:artist:3uOCouLFR4bVx0XeiQJSbl"
     },
     {
         "id": 668,
@@ -614,7 +663,8 @@
         "label_issue": "006",
         "genre": "ambient",
         "track": "MT-DMZ",
-        "uri": "spotify:album:3AScFbE9hKQYbkpZAKQG0z"
+        "album_uri": "spotify:album:3AScFbE9hKQYbkpZAKQG0z",
+        "artist_uri": "spotify:artist:6i00oaG8CaVVycyabgRSnn"
     },
     {
         "id": 684,
@@ -624,7 +674,8 @@
         "label_issue": "007",
         "genre": "ambient",
         "track": "A",
-        "uri": "spotify:album:6F3QWtBSiZbpiEWOzFexqT"
+        "album_uri": "spotify:album:6F3QWtBSiZbpiEWOzFexqT",
+        "artist_uri": "spotify:artist:7n4elmxtoFfIIvLVQIW7Du"
     },
     {
         "id": 688,
@@ -643,7 +694,8 @@
         "label_issue": "MVARC1",
         "genre": "ambient",
         "track": "Ambient City 1994 A",
-        "uri": "spotify:album:1IQICFxkGkeAo5hP8SiHeg"
+        "album_uri": "spotify:album:1IQICFxkGkeAo5hP8SiHeg",
+        "artist_uri": "spotify:artist:4MKaSrI4KJmcWx4dFFJtyN"
     },
     {
         "id": 699,
@@ -653,7 +705,8 @@
         "label_issue": "fait-33",
         "genre": "ambient",
         "track": "Sentimental Guitar Dream",
-        "uri": "spotify:album:2NYYbMrMwTBcQViuK1C5yc"
+        "album_uri": "spotify:album:2NYYbMrMwTBcQViuK1C5yc",
+        "artist_uri": "spotify:artist:5sfrMjdWRJspu6beTVvJ1l"
     },
     {
         "id": 709,
@@ -663,7 +716,8 @@
         "label_issue": "Shelter 141",
         "genre": "ambient",
         "track": "On The Corner Of The Day",
-        "uri": "spotify:album:4ih2OLZjOKXc8ndsoCSCCL"
+        "album_uri": "spotify:album:4ih2OLZjOKXc8ndsoCSCCL",
+        "artist_uri": "spotify:artist:5tWRKxz6TY4YfkdrMPGPPi"
     },
     {
         "id": 717,
@@ -673,7 +727,8 @@
         "label_issue": "TFEx16",
         "genre": "ambient",
         "track": "KMA - Towards East",
-        "uri": "spotify:album:1ZUR4TOmLJoQegAAijyVj2"
+        "album_uri": "spotify:album:1ZUR4TOmLJoQegAAijyVj2",
+        "artist_uri": "spotify:artist:3dds88EVSeBgkPCJ47ZzRZ"
     },
     {
         "id": 725,
@@ -692,7 +747,8 @@
         "label_issue": "TTTDLC1",
         "genre": "ambient",
         "track": "Lumeri",
-        "uri": "spotify:album:6a0cqgAccWe6nr9lF5FV8S"
+        "album_uri": "spotify:album:6a0cqgAccWe6nr9lF5FV8S",
+        "artist_uri": "spotify:artist:1E7vrdl8vpQabpzYiWSCwv"
     },
     {
         "id": 749,
@@ -702,7 +758,8 @@
         "label_issue": "LP 010",
         "genre": "ambient",
         "track": "Tonic",
-        "uri": "spotify:album:5NjjrILB9EBcFu5BmmKM3C"
+        "album_uri": "spotify:album:5NjjrILB9EBcFu5BmmKM3C",
+        "artist_uri": "spotify:artist:5LB9IrTotWwwR78KV3s5xm"
     },
     {
         "id": 769,
@@ -712,7 +769,8 @@
         "label_issue": "001",
         "genre": "ambient",
         "track": "Till Hurricane Bisect",
-        "uri": "spotify:album:5KJ6knuB1IVgxIsYTNX6dd"
+        "album_uri": "spotify:album:5KJ6knuB1IVgxIsYTNX6dd",
+        "artist_uri": "spotify:artist:5blZUSGq0z7HhuSldSXV3a"
     },
     {
         "id": 771,
@@ -731,7 +789,8 @@
         "label_issue": "110",
         "genre": "ambient",
         "track": "Metamorphosis",
-        "uri": "spotify:album:4FzqILI4ECxwGtA1UqeDZr"
+        "album_uri": "spotify:album:4FzqILI4ECxwGtA1UqeDZr",
+        "artist_uri": "spotify:artist:164wtwtdBHoXBQYt9xnUoI"
     },
     {
         "id": 803,
@@ -741,7 +800,8 @@
         "label_issue": "034",
         "genre": "ambient",
         "track": "Part One",
-        "uri": "spotify:album:1p34puBqOsuPpUlkPNBE95"
+        "album_uri": "spotify:album:1p34puBqOsuPpUlkPNBE95",
+        "artist_uri": "spotify:artist:7fZxCybxxm3zTY2OvIlWSq"
     },
     {
         "id": 807,
@@ -751,7 +811,8 @@
         "label_issue": "035",
         "genre": "ambient",
         "track": "A1",
-        "uri": "spotify:album:5hNWmEpEYJBN0wvtnfi77S"
+        "album_uri": "spotify:album:5hNWmEpEYJBN0wvtnfi77S",
+        "artist_uri": "spotify:artist:6ZX4eVTPQBJ7q0cIShOmKD"
     },
     {
         "id": 815,
@@ -770,7 +831,8 @@
         "label_issue": "3922",
         "genre": "ambient",
         "track": "Xtal",
-        "uri": "spotify:album:7aNclGRxTysfh6z0d8671k"
+        "album_uri": "spotify:album:7aNclGRxTysfh6z0d8671k",
+        "artist_uri": "spotify:artist:6kBDZFXuLrZgHnvmPu9NsG"
     },
     {
         "id": 879,
@@ -780,7 +842,8 @@
         "label_issue": "032",
         "genre": "ambient",
         "track": "Rhyolite",
-        "uri": "spotify:album:3WAbMZybs547PluyGB0pcX"
+        "album_uri": "spotify:album:3WAbMZybs547PluyGB0pcX",
+        "artist_uri": "spotify:artist:1KWb17jGSlqzn8wByXHTsQ"
     },
     {
         "id": 891,
@@ -790,7 +853,8 @@
         "label_issue": "013",
         "genre": "ambient",
         "track": "Voyageur",
-        "uri": "spotify:album:5oBWAt0KivtEZaMkGz9Dvj"
+        "album_uri": "spotify:album:5oBWAt0KivtEZaMkGz9Dvj",
+        "artist_uri": "spotify:artist:2AuLARqylp2Yy77MpY2CtJ"
     },
     {
         "id": 909,
@@ -800,7 +864,8 @@
         "label_issue": "004",
         "genre": "ambient",
         "track": "Renzo",
-        "uri": "spotify:album:59RC0CCqIemdAA9nueZvMb"
+        "album_uri": "spotify:album:59RC0CCqIemdAA9nueZvMb",
+        "artist_uri": "spotify:artist:7idm1Z2kk9ffIobkLlZ2Ds"
     },
     {
         "id": 917,
@@ -810,7 +875,8 @@
         "label_issue": "APMU84-II",
         "genre": "ambient",
         "track": "FI3AC2384110",
-        "uri": "spotify:album:4xU0DrRSDW0O7OFndm8fu1"
+        "album_uri": "spotify:album:4xU0DrRSDW0O7OFndm8fu1",
+        "artist_uri": "spotify:artist:3hjBVvW03HcmXfKUipv1Fx"
     },
     {
         "id": 929,
@@ -829,7 +895,8 @@
         "label_issue": "083",
         "genre": "ambient",
         "track": "Bits",
-        "uri": "spotify:album:34L5ucw3H2IvjE9BIRgNkF"
+        "album_uri": "spotify:album:34L5ucw3H2IvjE9BIRgNkF",
+        "artist_uri": "spotify:artist:6DnmC13nc24fMxzVP9U66S"
     },
     {
         "id": 953,
@@ -839,7 +906,8 @@
         "label_issue": "028",
         "genre": "ambient",
         "track": "Statuario",
-        "uri": "spotify:album:4iZQx2yaJNFhomxb2I64Lw"
+        "album_uri": "spotify:album:4iZQx2yaJNFhomxb2I64Lw",
+        "artist_uri": "spotify:artist:1kQP1Xg6Q8bmdjXAirDQKG"
     },
     {
         "id": 977,
@@ -849,6 +917,62 @@
         "label_issue": "006",
         "genre": "ambient",
         "track": "Frames",
-        "uri": "spotify:album:6rx2VVu83WPLFrbK0Py1Kl"
+        "album_uri": "spotify:album:6rx2VVu83WPLFrbK0Py1Kl",
+        "artist_uri": "spotify:artist:3DzpPfgpxIvjz3eoqmCDub"
+    },
+    {
+        "id": 986,
+        "artist": "Various Artists",
+        "album": "Life Death Resurrection Revenge",
+        "label": "Limbic Resonance",
+        "label_issue": "005",
+        "genre": "ambient",
+        "track": "Threetwoone",
+        "album_uri": "spotify:album:0DmdJbdw9Mpy9dmK7NQOTq",
+        "artist_uri": "spotify:artist:0LyfQWJT6nXafLPZqxe9Of"
+    },
+    {
+        "id": 999,
+        "artist": "Rvshes",
+        "album": "Eclipse",
+        "label": "Captured Visions",
+        "label_issue": "CVT004",
+        "genre": "ambient",
+        "track": "Paradise",
+        "album_uri": "spotify:album:2yErqGR7tfal4IbELf9D15",
+        "artist_uri": "spotify:artist:48FFMDB7JuxGi2p39TEbAm"
+    },
+    {
+        "id": 153404,
+        "artist": "Godtet",
+        "album": "III",
+        "label": "La Sape",
+        "label_issue": "012",
+        "genre": "house",
+        "track": "Moon",
+        "album_uri": "spotify:album:4wBRBbVgy4GIfl2TPwtFK3",
+        "artist_uri": "spotify:artist:09OgHVPSgCgflZLrGScfE9"
+    },
+    {
+        "id": 1007,
+        "artist": "Sara Oswald & Feldermelder",
+        "album": "Dual | Duel",
+        "label": "Ous",
+        "label_issue": "038",
+        "genre": "ambient",
+        "track": "Transpersonal Source",
+        "album_uri": "spotify:album:6GQSsqkF6ZjnJoXtuHfUqJ",
+        "artist_uri": "spotify:artist:0bYNlqGZ6i821eXdZgDd4g"
+    },
+    {
+        "id": 1019,
+        "artist": "Alva Noto",
+        "album": "This Stolen Country of Mine (Original Motion Picture Soundtrack)",
+        "label": "Noton",
+        "label_issue": "N-059",
+        "genre": "ambient",
+        "track": "Ritual",
+        "album_uri": "spotify:album:5C5ZkhlDDMKQnSmVG1x58u",
+        "artist_uri": "spotify:artist:1zrqDVuh55auIRthalFdXp"
     }
 ]
