@@ -35,8 +35,11 @@ class SpotifyClass:
         print("Database connected")
 
         # load the environment variables for the spotipy library
-        self.spotipy_client_id = os.getenv("SPOTIPY_CLIENT")
-        self.spotipy_client_secret = os.getenv("SPOTIPY_SECRET")
+        self.spotipy_client_id = os.getenv("SPOTIPY_CLIENT2")
+        self.spotipy_client_secret = os.getenv("SPOTIPY_SECRET2")
+        # print(
+        #     f"Client ID: {self.spotipy_client_id}, Secret: {self.spotipy_client_secret}"
+        # )
         self.auth_manager = SpotifyClientCredentials(
             client_id=self.spotipy_client_id, client_secret=self.spotipy_client_secret
         )
@@ -190,25 +193,33 @@ class SpotifyClass:
         for music_album in self.music_albums_unique:
             album = music_album["album"]
             artist = music_album["artist"]
-            try:
-                results = self.sp.search(
-                    q=f"album:{album} artist:{artist}", type="album"
-                )
-                print(f"Searching for album: {album} by {artist}")
-                if results["albums"]["items"]:
-                    album_uri = results["albums"]["items"][0]["uri"]
-                    artist_uri = results["albums"]["items"][0]["artists"][0]["uri"]
-                    music_album_with_uri = {
-                        **music_album,
-                        "album_uri": album_uri,
-                        "artist_uri": artist_uri,
-                    }
-                    self.album_results.append(music_album_with_uri)
-                    self.save_to_database()
-                else:
-                    self.album_results.append(music_album)
-            except spotipy.exceptions.SpotifyException as e:
-                print(f"Error occurred while searching for album: {e}")
+            while True:
+                try:
+                    results = self.sp.search(
+                        q=f"album:{album} artist:{artist}", type="album"
+                    )
+                    print(f"Searching for album: {album} by {artist}")
+                    if results["albums"]["items"]:
+                        album_uri = results["albums"]["items"][0]["uri"]
+                        artist_uri = results["albums"]["items"][0]["artists"][0]["uri"]
+                        music_album_with_uri = {
+                            **music_album,
+                            "album_uri": album_uri,
+                            "artist_uri": artist_uri,
+                        }
+                        self.album_results.append(music_album_with_uri)
+                        self.save_to_database()
+                    else:
+                        self.album_results.append(music_album)
+                    break
+                except spotipy.exceptions.SpotifyException as e:
+                    if e.http_status == 429:
+                        print("Rate limit exceeded. Waiting...")
+                        time.sleep(int(e.headers["Retry-After"]))
+                        continue
+                    else:
+                        print(f"Error occurred while searching for album: {e}")
+                        break
 
     def save_to_json(self):
         """
