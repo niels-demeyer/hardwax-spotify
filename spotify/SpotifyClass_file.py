@@ -172,7 +172,7 @@ class SpotifyClass:
         except Exception as e:
             print(f"Error in getting music albums: {e}")
 
-    def unique_music_albums_table(self):
+    def make_unique_music_albums_table(self):
         """
         Update the unique music albums table.
         """
@@ -191,25 +191,19 @@ class SpotifyClass:
         except Exception as e:
             print(f"Error in updating music albums: {e}")
 
-    def make_unique_music_albums(self):
+    def get_unique_music_albums(self):
         """
-        Make the music albums unique.
+        Get the unique music albums from the database.
         """
         try:
-            print("Making unique music albums...")
-            seen_albums = set()
-            spotify_data_songs_set = set(self.spotify_data_songs)
-            for album in self.music_albums_all:
-                album_name = album["album"]
-                if (
-                    album_name not in seen_albums
-                    and album_name not in spotify_data_songs_set
-                ):
-                    self.music_albums_unique.append(album)
-                    seen_albums.add(album_name)
-            print("Unique music albums made")
+            cur = self.conn.cursor()
+            cur.execute("SELECT * FROM music_albums_unique")
+            colnames = [desc[0] for desc in cur.description]
+            self.music_albums_unique = [
+                dict(zip(colnames, row)) for row in cur.fetchall()
+            ]
         except Exception as e:
-            print(f"Error in making unique music albums: {e}")
+            print(f"Error in getting unique music albums: {e}")
 
     def search_album(self) -> Dict[str, Any]:
         """
