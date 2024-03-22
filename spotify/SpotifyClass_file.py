@@ -221,7 +221,7 @@ class SpotifyClass:
             cur = self.conn.cursor()
             cur.execute(
                 """
-            SELECT * from music_albums_unique
+            SELECT * from music_albums_unique WHERE checked = False
             """
             )
             column = [description[0] for description in cur.description]
