@@ -172,6 +172,29 @@ class SpotifyClass:
         except Exception as e:
             print(f"Error in getting music albums: {e}")
 
+    def unique_music_albums_table(self):
+        """
+        Make the unique music albums table.
+        """
+        try:
+            cur = self.conn.cursor()
+            cur.execute(
+                """
+                CREATE TABLE IF NOT EXISTS spotify_data_songs (
+                    id SERIAL PRIMARY KEY,
+                    artist VARCHAR(255),
+                    label VARCHAR(255),
+                    label_issue VARCHAR(255),
+                    genre VARCHAR(255),
+                    track VARCHAR(255),
+                    checked BOOLEAN DEFAULT FALSE,
+                    UNIQUE(id, artist, track)
+                );
+                """
+            )
+        except Exception as e:
+            print(f"Error in creating unique music albums table: {e}")
+
     def make_unique_music_albums(self):
         """
         Make the music albums unique.
