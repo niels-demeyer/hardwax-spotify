@@ -33,7 +33,7 @@ class Collectors_itemsSpider(scrapy.Spider):
                                 title.count(":") == 1
                             ):  # Only process the element if title contains exactly one colon
                                 track = title.split(":")[1]
-                                print("Data:", artist, album, label, label_issue, track)
+
                                 yield {
                                     "artist": artist.strip(),
                                     "album": album.strip(),
