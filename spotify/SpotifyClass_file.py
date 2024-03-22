@@ -201,10 +201,12 @@ class SpotifyClass:
                     "artist_uri": artist_uri,
                 }
                 self.album_results.append(music_album_with_uri)
-                self.save_to_json()
+
             else:
                 self.album_results.append(music_album)
-                self.save_to_json()
+
+        self.save_to_database()
+        print("Album search completed and saved to database")
 
     def save_to_json(self):
         """
@@ -215,3 +217,32 @@ class SpotifyClass:
                 json.dump(self.album_results, f, indent=4)
         except Exception as e:
             print(f"Error in saving to JSON: {e}")
+
+    def save_to_database(self):
+        """
+        Save the album results to the database.
+        """
+        try:
+            with self.conn.cursor() as cur:
+                for album in self.album_results:
+                    if "album_uri" in album and "artist_uri" in album:
+                        cur.execute(
+                            sql.SQL(
+                                """
+                                INSERT INTO spotify_data_songs (artist, label, label_issue, genre, track, album_uri, artist_uri)
+                                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                                """
+                            ),
+                            (
+                                album["artist"],
+                                album["label"],
+                                album["label_issue"],
+                                album["genre"],
+                                album["track"],
+                                album["album_uri"],
+                                album["artist_uri"],
+                            ),
+                        )
+                self.conn.commit()
+        except Exception as e:
+            print(f"Error in saving to database: {e}")
