@@ -192,11 +192,16 @@ class SpotifyClass:
             artist = music_album["artist"]
             results = self.sp.search(q=f"album:{album} artist:{artist}", type="album")
             print(f"Searching for album: {album} by {artist}")
-            self.album_results.append(results)
-            self.save_to_json()
-
-        else:
-            return None
+            if results["albums"]["items"]:
+                music_album_with_uri = {
+                    **music_album,
+                    "uri": results["albums"]["items"][0]["uri"],
+                }
+                self.album_results.append(music_album_with_uri)
+                self.save_to_json()
+            else:
+                self.album_results.append(music_album)
+                self.save_to_json()
 
     def save_to_json(self):
         """
