@@ -185,7 +185,6 @@ class SpotifyClass:
             )
             column = [description[0] for description in cur.description]
             distinct_music_albums = [dict(zip(column, row)) for row in cur.fetchall()]
-            self.music_albums_unique = distinct_music_albums
             cur.execute(
                 """CREATE TABLE IF NOT EXISTS music_albums_unique( 
                 id INT PRIMARY KEY,
@@ -213,9 +212,28 @@ class SpotifyClass:
         except Exception as e:
             print(f"Error in updating music albums: {e}")
 
+    def get_unique_music_albums(self):
+        """
+        Fetch from the music_albums_unique table and return as a dict
+        """
+        try:
+            self.make_unique_music_albums_table()
+            cur = self.conn.cursor()
+            cur.execute(
+                """
+            SELECT * from music_albums_unique
+            """
+            )
+            column = [description[0] for description in cur.description]
+            self.music_albums_unique = [
+                dict(zip(column, row)) for row in cur.fetchall()
+            ]
+        except Exception as e:
+            print("Error in get_unique_music_albums:", e)
+
     def search_album(self) -> Dict[str, Any]:
         """
-        Search for an album on Spotify by its name and artist, and return all its tracks.
+        Search for an album on Spotify by its name and artist, and returns the artist_uri and album_uri
         """
         for music_album in self.music_albums_unique:
             album = music_album["album"]
@@ -241,7 +259,7 @@ class SpotifyClass:
                     else:
                         self.album_results.append(music_album)
                         print(f"Album not found: {album} by {artist}")
-                        # self.save_to_database()
+                        self.save_to_database()
                         self.save_to_json()
                     break
                 except spotipy.exceptions.SpotifyException as e:
