@@ -48,7 +48,7 @@ class SpotifyClass:
         # Define the variables
         self.spotify_data_songs = []
         self.music_albums_all = []
-        self.music_albums_unique = []
+        self.music_albums_unique = None
         self.album_results = []
 
     def search_artist(self, artist_name: str) -> Dict[str, Any]:
@@ -183,7 +183,9 @@ class SpotifyClass:
                 SELECT DISTINCT ON (artist, album) * FROM music_albums
                 """
             )
-            distinct_music_albums = cur.fetchall()
+            column = [description[0] for description in cur.description]
+            distinct_music_albums = [dict(zip(column, row)) for row in cur.fetchall()]
+            self.music_albums_unique = distinct_music_albums
             cur.execute(
                 """CREATE TABLE IF NOT EXISTS music_albums_unique( 
                 id INT PRIMARY KEY,
@@ -202,9 +204,9 @@ class SpotifyClass:
                     ON CONFLICT (artist, album) DO NOTHING
                     """,
                     (
-                        album[0],  # assuming id is at index 0
-                        album[2],  # assuming artist is at index 2
-                        album[3],  # assuming album is at index 3
+                        album["id"],
+                        album["artist"],
+                        album["album"],
                     ),
                 )
             self.conn.commit()
