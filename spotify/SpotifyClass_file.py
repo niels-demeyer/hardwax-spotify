@@ -46,7 +46,7 @@ class SpotifyClass:
         self.sp = spotipy.Spotify(auth_manager=self.auth_manager)
 
         # Define the variables
-        self.spotify_data_songs = []
+        self.spotify_data_albums = []
         self.music_albums_all = []
         self.music_albums_unique = None
         self.album_results = []
@@ -104,19 +104,19 @@ class SpotifyClass:
 
     def ensure_spotify_data_table_exists(self):
         try:
-            print("Ensuring spotify_data_songs table exists...")
+            print("Ensuring spotify_data_albums table exists...")
             with self.conn.cursor(cursor_factory=DictCursor) as cur:
                 cur.execute(
                     """
                     SELECT EXISTS (
                         SELECT FROM information_schema.tables 
-                        WHERE table_name = 'spotify_data_songs'
+                        WHERE table_name = 'spotify_data_albums'
                     );
                     """
                 )
                 result = cur.fetchone()
                 if result[0]:
-                    print("Table spotify_data_songs exists")
+                    print("Table spotify_data_albums exists")
                     return True
                 else:
                     self.create_spotify_data_table()
@@ -125,35 +125,32 @@ class SpotifyClass:
 
     def create_spotify_data_table(self):
         try:
-            print("Attempting to create spotify_data_songs table...")
+            print("Attempting to create spotify_data_albums table...")
             create_table_query = """
-            CREATE TABLE IF NOT EXISTS spotify_data_songs (
+            CREATE TABLE IF NOT EXISTS spotify_data_albums (
                 id SERIAL PRIMARY KEY,
                 artist VARCHAR(255),
-                label VARCHAR(255),
-                label_issue VARCHAR(255),
-                genre VARCHAR(255),
-                track VARCHAR(255),
+                album VARCHAR(255),
                 album_uri VARCHAR(255),
                 artist_uri VARCHAR(255),
-                UNIQUE(id, artist, track)
+                UNIQUE(id, artist, album)
             );
             """
             with self.conn.cursor() as cur:
                 cur.execute(create_table_query)
             self.conn.commit()
-            print("Table spotify_data_songs ensured to exist successfully")
+            print("Table spotify_data_albums ensured to exist successfully")
         except Exception as e:
             print(f"Error in creating table: {e}")
 
-    def get_spotify_data_songs(self):
+    def get_spotify_data_albums(self):
         """
         Get the data from the songs table in the database.
         """
         try:
             cur = self.conn.cursor()
-            cur.execute("SELECT * FROM spotify_data_songs ORDER BY id DESC")
-            self.spotify_data_songs = cur.fetchall()
+            cur.execute("SELECT * FROM spotify_data_albums ORDER BY id DESC")
+            self.spotify_data_albums = cur.fetchall()
         except Exception as e:
             print(f"Error in getting spotify data songs: {e}")
 
@@ -305,26 +302,24 @@ class SpotifyClass:
         try:
             with self.conn.cursor() as cur:
                 for album in self.album_results:
+                    id = album.get("artist_uri", None)
+                    artist = album.get("artist", None)
+                    album = album.get("album", None)
                     artist_uri = album.get("artist_uri", None)
                     album_uri = album.get("album_uri", None)
-                    label = album.get("label", None)
-                    label_issue = album.get("label_issue", None)
-                    genre = album.get("genre", None)
-                    track = album.get("track", None)
+
                     cur.execute(
                         sql.SQL(
                             """
-                            INSERT INTO spotify_data_songs (artist, label, label_issue, genre, track, album_uri, artist_uri)
-                            VALUES (%s, %s, %s, %s, %s, %s, %s)
+                            INSERT INTO spotify_data_albums (id, artist, album, album_uri, artist_uri)
+                            VALUES (%s, %s, %s, %s, %s)
                             ON CONFLICT (id) DO NOTHING;
                             """
                         ),
                         (
-                            album["artist"],
-                            label,
-                            label_issue,
-                            genre,
-                            track,
+                            id,
+                            artist,
+                            album,
                             album_uri,
                             artist_uri,
                         ),
