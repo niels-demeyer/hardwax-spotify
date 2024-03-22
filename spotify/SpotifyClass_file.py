@@ -152,7 +152,7 @@ class SpotifyClass:
         """
         try:
             cur = self.conn.cursor()
-            cur.execute("SELECT * FROM spotify_data_songs")
+            cur.execute("SELECT * FROM spotify_data_songs ORDER BY id DESC")
             self.spotify_data_songs = cur.fetchall()
         except Exception as e:
             print(f"Error in getting spotify data songs: {e}")
