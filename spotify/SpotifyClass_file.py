@@ -180,7 +180,7 @@ class SpotifyClass:
             cur = self.conn.cursor()
             cur.execute(
                 """
-                CREATE TABLE music_albums_unique AS 
+                CREATE TABLE IF NOT EXISTS music_albums_unique AS 
                 SELECT album, artist, genre 
                 FROM music_albums 
                 GROUP BY album, artist, genre
