@@ -297,7 +297,7 @@ class SpotifyClass:
             ]
 
             # Append to the existing file or create a new one
-            with open("album_results.csv", "a", newline="") as f:
+            with open("album_results.csv", "a", newline="", encoding="utf-8") as f:
                 writer = csv.DictWriter(f, fieldnames=["album", "artist"])
                 if f.tell() == 0:
                     writer.writeheader()
