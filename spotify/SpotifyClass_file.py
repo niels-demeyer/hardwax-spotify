@@ -301,28 +301,29 @@ class SpotifyClass:
         try:
             with self.conn.cursor() as cur:
                 for album in self.album_results:
-                    id = album.get("id", None)
-                    artist = album.get("artist", None)
-                    album_name = album.get("album", None)
-                    artist_uri = album["artist_uri"]
-                    album_uri = album["album_uri"]
+                    if "artist_uri" in album and "album_uri" in album:
+                        id = album.get("id", None)
+                        artist = album.get("artist", None)
+                        album_name = album.get("album", None)
+                        artist_uri = album["artist_uri"]
+                        album_uri = album["album_uri"]
 
-                    cur.execute(
-                        sql.SQL(
-                            """
-                            INSERT INTO spotify_data_albums (id, artist, album, album_uri, artist_uri)
-                            VALUES (%s, %s, %s, %s, %s)
-                            ON CONFLICT (id) DO NOTHING;
-                            """
-                        ),
-                        (
-                            id,
-                            artist,
-                            album_name,
-                            album_uri,
-                            artist_uri,
-                        ),
-                    )
+                        cur.execute(
+                            sql.SQL(
+                                """
+                                INSERT INTO spotify_data_albums (id, artist, album, album_uri, artist_uri)
+                                VALUES (%s, %s, %s, %s, %s)
+                                ON CONFLICT (id) DO NOTHING;
+                                """
+                            ),
+                            (
+                                id,
+                                artist,
+                                album_name,
+                                album_uri,
+                                artist_uri,
+                            ),
+                        )
                 self.conn.commit()
         except Exception as e:
             print(f"Error in saving to database: {e}")
