@@ -129,7 +129,6 @@ class SpotifyClass:
             create_table_query = """
             CREATE TABLE IF NOT EXISTS spotify_data_songs (
                 id SERIAL PRIMARY KEY,
-                checked BOOLEAN DEFAULT FALSE,
                 artist VARCHAR(255),
                 label VARCHAR(255),
                 label_issue VARCHAR(255),
@@ -181,30 +180,34 @@ class SpotifyClass:
             cur = self.conn.cursor()
             cur.execute(
                 """
-                DROP TABLE IF EXISTS music_albums_unique;
-                CREATE TABLE music_albums_unique AS 
-                SELECT album, artist, genre 
-                FROM music_albums 
-                GROUP BY album, artist, genre
+                SELECT DISTINCT ON (artist, album) * FROM music_albums
+                """
+            )
+            distinct_music_albums = cur.fetchall()
+            cur.execute(
+                """CREATE TABLE IF NOT EXISTS music_albums_unique( 
+                id INT PRIMARY KEY,
+                checked BOOLEAN DEFAULT FALSE,
+                artist VARCHAR(255),
+                album VARCHAR(255)
+                )
                 """
             )
             self.conn.commit()
+            for album in distinct_music_albums:
+                cur.execute(
+                    """
+                    INSERT INTO music_albums_unique (id, artist, album) VALUES (%s, %s, %s)
+                    """,
+                    (
+                        album[0],  # assuming id is at index 0
+                        album[2],  # assuming artist is at index 2
+                        album[3],  # assuming album is at index 3
+                    ),
+                )
+            self.conn.commit()
         except Exception as e:
             print(f"Error in updating music albums: {e}")
-
-    def get_unique_music_albums(self):
-        """
-        Get the unique music albums from the database.
-        """
-        try:
-            cur = self.conn.cursor()
-            cur.execute("SELECT * FROM music_albums_unique")
-            colnames = [desc[0] for desc in cur.description]
-            self.music_albums_unique = [
-                dict(zip(colnames, row)) for row in cur.fetchall()
-            ]
-        except Exception as e:
-            print(f"Error in getting unique music albums: {e}")
 
     def search_album(self) -> Dict[str, Any]:
         """
