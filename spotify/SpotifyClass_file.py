@@ -180,20 +180,15 @@ class SpotifyClass:
             cur = self.conn.cursor()
             cur.execute(
                 """
-                CREATE TABLE IF NOT EXISTS spotify_data_songs (
-                    id SERIAL PRIMARY KEY,
-                    artist VARCHAR(255),
-                    label VARCHAR(255),
-                    label_issue VARCHAR(255),
-                    genre VARCHAR(255),
-                    track VARCHAR(255),
-                    checked BOOLEAN DEFAULT FALSE,
-                    UNIQUE(id, artist, track)
-                );
+                CREATE TABLE music_albums_unique AS 
+                SELECT album, artist, genre 
+                FROM music_albums 
+                GROUP BY album, artist, genre
                 """
             )
+            self.conn.commit()
         except Exception as e:
-            print(f"Error in creating unique music albums table: {e}")
+            print(f"Error in getting music albums: {e}")
 
     def make_unique_music_albums(self):
         """
