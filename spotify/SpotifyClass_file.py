@@ -189,7 +189,8 @@ class SpotifyClass:
                 id INT PRIMARY KEY,
                 checked BOOLEAN DEFAULT FALSE,
                 artist VARCHAR(255),
-                album VARCHAR(255)
+                album VARCHAR(255),
+                UNIQUE(artist, album)
                 )
                 """
             )
@@ -198,6 +199,7 @@ class SpotifyClass:
                 cur.execute(
                     """
                     INSERT INTO music_albums_unique (id, artist, album) VALUES (%s, %s, %s)
+                    ON CONFLICT (artist, album) DO NOTHING
                     """,
                     (
                         album[0],  # assuming id is at index 0
