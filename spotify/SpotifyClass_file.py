@@ -180,7 +180,10 @@ class SpotifyClass:
             seen_albums = set()
             for album in self.music_albums_all:
                 album_name = album["album"]
-                if album_name not in seen_albums:
+                if (
+                    album_name not in seen_albums
+                    and album_name not in self.spotify_data_songs
+                ):
                     self.music_albums_unique.append(album)
                     seen_albums.add(album_name)
         except Exception as e:
