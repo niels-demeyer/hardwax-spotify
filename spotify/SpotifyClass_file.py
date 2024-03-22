@@ -257,8 +257,7 @@ class SpotifyClass:
                     else:
                         self.album_results.append(music_album)
                         print(f"Album not found: {album} by {artist}")
-                        self.save_to_database()
-                        # self.save_to_json()
+                        self.save_to_json()
                     self.update_checked_status(album_id)
                     break
                 except spotipy.exceptions.SpotifyException as e:
@@ -302,11 +301,11 @@ class SpotifyClass:
         try:
             with self.conn.cursor() as cur:
                 for album in self.album_results:
-                    id = album.get("artist_uri", None)
+                    id = album.get("id", None)
                     artist = album.get("artist", None)
-                    album = album.get("album", None)
-                    artist_uri = album.get("artist_uri", None)
-                    album_uri = album.get("album_uri", None)
+                    album_name = album.get("album", None)
+                    artist_uri = album["artist_uri"]
+                    album_uri = album["album_uri"]
 
                     cur.execute(
                         sql.SQL(
@@ -319,7 +318,7 @@ class SpotifyClass:
                         (
                             id,
                             artist,
-                            album,
+                            album_name,
                             album_uri,
                             artist_uri,
                         ),
