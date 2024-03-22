@@ -215,11 +215,13 @@ class SpotifyClass:
                         }
                         self.album_results.append(music_album_with_uri)
                         print(f"Album found: {album} by {artist}")
-                        self.save_to_database()
+                        # self.save_to_database()
+                        self.save_to_json()
                     else:
                         self.album_results.append(music_album)
                         print(f"Album not found: {album} by {artist}")
-                        self.save_to_database()
+                        # self.save_to_database()
+                        self.save_to_json()
                     break
                 except spotipy.exceptions.SpotifyException as e:
                     if e.http_status == 429:
