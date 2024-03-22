@@ -236,6 +236,7 @@ class SpotifyClass:
             album = music_album["album"]
             artist = music_album["artist"]
             album_id = music_album["id"]  # assuming your dictionary includes the id
+            not_found = []
             while True:
                 try:
                     results = self.sp.search(
@@ -255,9 +256,9 @@ class SpotifyClass:
                         self.save_to_database()
                         # self.save_to_json()
                     else:
-                        self.album_results.append(music_album)
+                        not_found.append((album, artist))  # append as a tuple
                         print(f"Album not found: {album} by {artist}")
-                        self.save_to_json()
+                        self.save_to_json(not_found)
                     self.update_checked_status(album_id)
                     break
                 except spotipy.exceptions.SpotifyException as e:
@@ -284,13 +285,13 @@ class SpotifyClass:
         except Exception as e:
             print("Error in update_checked_status:", e)
 
-    def save_to_json(self):
+    def save_to_json(self, input_data: List[Dict[str, Any]]):
         """
         Save the album results to a JSON file.
         """
         try:
             with open("album_results.json", "w") as f:
-                json.dump(self.album_results, f, indent=4)
+                json.dump(input_data, f, indent=4)
         except Exception as e:
             print(f"Error in saving to JSON: {e}")
 
