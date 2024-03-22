@@ -190,23 +190,25 @@ class SpotifyClass:
         for music_album in self.music_albums_unique:
             album = music_album["album"]
             artist = music_album["artist"]
-            results = self.sp.search(q=f"album:{album} artist:{artist}", type="album")
-            print(f"Searching for album: {album} by {artist}")
-            if results["albums"]["items"]:
-                album_uri = results["albums"]["items"][0]["uri"]
-                artist_uri = results["albums"]["items"][0]["artists"][0]["uri"]
-                music_album_with_uri = {
-                    **music_album,
-                    "album_uri": album_uri,
-                    "artist_uri": artist_uri,
-                }
-                self.album_results.append(music_album_with_uri)
-
-            else:
-                self.album_results.append(music_album)
-
-        self.save_to_database()
-        print("Album search completed and saved to database")
+            try:
+                results = self.sp.search(
+                    q=f"album:{album} artist:{artist}", type="album"
+                )
+                print(f"Searching for album: {album} by {artist}")
+                if results["albums"]["items"]:
+                    album_uri = results["albums"]["items"][0]["uri"]
+                    artist_uri = results["albums"]["items"][0]["artists"][0]["uri"]
+                    music_album_with_uri = {
+                        **music_album,
+                        "album_uri": album_uri,
+                        "artist_uri": artist_uri,
+                    }
+                    self.album_results.append(music_album_with_uri)
+                    self.save_to_database()
+                else:
+                    self.album_results.append(music_album)
+            except spotipy.exceptions.SpotifyException as e:
+                print(f"Error occurred while searching for album: {e}")
 
     def save_to_json(self):
         """
@@ -231,6 +233,7 @@ class SpotifyClass:
                                 """
                                 INSERT INTO spotify_data_songs (artist, label, label_issue, genre, track, album_uri, artist_uri)
                                 VALUES (%s, %s, %s, %s, %s, %s, %s)
+                                ON CONFLICT (id) DO NOTHING;
                                 """
                             ),
                             (
