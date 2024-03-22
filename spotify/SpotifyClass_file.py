@@ -129,6 +129,7 @@ class SpotifyClass:
             create_table_query = """
             CREATE TABLE IF NOT EXISTS spotify_data_songs (
                 id SERIAL PRIMARY KEY,
+                checked BOOLEAN DEFAULT FALSE,
                 artist VARCHAR(255),
                 label VARCHAR(255),
                 label_issue VARCHAR(255),
