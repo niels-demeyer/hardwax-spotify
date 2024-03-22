@@ -14,6 +14,7 @@ from datetime import datetime
 from psycopg2 import sql
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
+import csv
 
 
 class SpotifyClass:
@@ -258,7 +259,7 @@ class SpotifyClass:
                     else:
                         not_found.append((album, artist))  # append as a tuple
                         print(f"Album not found: {album} by {artist}")
-                        self.save_to_json(not_found)
+                        self.save_to_csv(input_data=not_found)
                     self.update_checked_status(album_id)
                     break
                 except spotipy.exceptions.SpotifyException as e:
@@ -285,15 +286,24 @@ class SpotifyClass:
         except Exception as e:
             print("Error in update_checked_status:", e)
 
-    def save_to_json(self, input_data: List[Dict[str, Any]]):
+    def save_to_csv(self, input_data: List[tuple[str, str]]):
         """
-        Save the album results to a JSON file.
+        Save the album results to a CSV file by appending new data.
         """
         try:
-            with open("album_results.json", "w") as f:
-                json.dump(input_data, f, indent=4)
+            # Convert tuples to dictionaries
+            dict_data = [
+                {"album": album, "artist": artist} for album, artist in input_data
+            ]
+
+            # Append to the existing file or create a new one
+            with open("album_results.csv", "a", newline="") as f:
+                writer = csv.DictWriter(f, fieldnames=["album", "artist"])
+                if f.tell() == 0:
+                    writer.writeheader()
+                writer.writerows(dict_data)
         except Exception as e:
-            print(f"Error in saving to JSON: {e}")
+            print(f"Error in saving to CSV: {e}")
 
     def save_to_database(self):
         """
