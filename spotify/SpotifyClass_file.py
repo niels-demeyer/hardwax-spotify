@@ -174,13 +174,14 @@ class SpotifyClass:
 
     def unique_music_albums_table(self):
         """
-        Make the unique music albums table.
+        Update the unique music albums table.
         """
         try:
             cur = self.conn.cursor()
             cur.execute(
                 """
-                CREATE TABLE IF NOT EXISTS music_albums_unique AS 
+                DROP TABLE IF EXISTS music_albums_unique;
+                CREATE TABLE music_albums_unique AS 
                 SELECT album, artist, genre 
                 FROM music_albums 
                 GROUP BY album, artist, genre
@@ -188,7 +189,7 @@ class SpotifyClass:
             )
             self.conn.commit()
         except Exception as e:
-            print(f"Error in getting music albums: {e}")
+            print(f"Error in updating music albums: {e}")
 
     def make_unique_music_albums(self):
         """
