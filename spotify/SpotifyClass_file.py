@@ -241,7 +241,7 @@ class SpotifyClass:
             while True:
                 try:
                     results = self.sp.search(
-                        q=f"album:{album} artist:{artist}", type="album"
+                        q=f"album:{album} artist:{artist}", type="album", market="DE"
                     )
                     print(f"Searching for album: {album} by {artist}")
                     if results["albums"]["items"]:
