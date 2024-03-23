@@ -366,3 +366,16 @@ class SpotifyClass:
                 self.conn.commit()
         except Exception as e:
             print(f"Error in saving to database: {e}")
+
+    def select_table_dict(self, table_name):
+        """
+        Select the whole table and return it as a dictionary
+        """
+        try:
+            cur = self.conn.cursor()
+            cur.execute(f"SELECT * FROM {table_name}")
+            column = [description[0] for description in cur.description]
+            result = [dict(zip(column, row)) for row in cur.fetchall()]
+            return result
+        except Exception as e:
+            print("Error in get_unique_music_albums:", e)
