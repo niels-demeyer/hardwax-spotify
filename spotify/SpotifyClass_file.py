@@ -37,8 +37,8 @@ class SpotifyClass:
         print("Database connected")
 
         # load the environment variables for the spotipy library
-        self.spotipy_client_id = os.getenv("SPOTIPY_CLIENT3")
-        self.spotipy_client_secret = os.getenv("SPOTIPY_SECRET3")
+        self.spotipy_client_id = os.getenv("SPOTIPY_CLIENT")
+        self.spotipy_client_secret = os.getenv("SPOTIPY_SECRET")
         # print(
         #     f"Client ID: {self.spotipy_client_id}, Secret: {self.spotipy_client_secret}"
         # )
@@ -242,7 +242,7 @@ class SpotifyClass:
             while True:
                 try:
                     results = self.sp.search(
-                        q=f"album:{album} artist:{artist}", type="album", market="DE"
+                        q=f"album:{album} artist:{artist}", type="album", market="BE"
                     )
                     print(f"Searching for album: {album} by {artist}")
                     if results["albums"]["items"]:
