@@ -254,7 +254,7 @@ class SpotifyClass:
                         }
                         self.album_results.append(music_album_with_uri)
                         print(f"Album found: {album} by {artist}")
-                        self.save_to_database()
+                        self.save_to_database_album()
                         # self.save_to_json()
                     else:
                         not_found.append((album, artist))  # append as a tuple
@@ -305,7 +305,7 @@ class SpotifyClass:
         except Exception as e:
             print(f"Error in saving to CSV: {e}")
 
-    def save_to_database(self):
+    def save_to_database_album(self):
         """
         Save the album results to the database.
         """
