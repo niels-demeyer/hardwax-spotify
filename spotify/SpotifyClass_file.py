@@ -275,9 +275,11 @@ class SpotifyClass:
         """
         Search for all the tracks in the albums that we have
         """
-        album_tracks = {}
+        for i, album in enumerate(spotify_data_albums):
+            # Stop after 50 albums
+            if i >= 50:
+                break
 
-        for album in spotify_data_albums:
             album_uri = album["album_uri"]
             artist_uri = album["artist_uri"]
 
@@ -287,15 +289,29 @@ class SpotifyClass:
 
             if album_id_match and artist_id_match:
                 album_id = album_id_match.group(1)
-                artist_id = artist_id_match.group(1)
 
                 # Get the tracks of the album
                 tracks = self.get_album_tracks(album_id)
 
-                # Add the tracks to the dictionary
-                album_tracks[album_id] = tracks
+                # Add the tracks to the album dictionary
+                album["searched_tracks"] = tracks
+        return spotify_data_albums
 
-        return album_tracks
+    def get_album_tracks(self, album_id):
+        """
+        Get the tracks of an album
+        """
+        try:
+            # Get the album's tracks
+            results = self.sp.album_tracks(album_id)
+
+            # Extract the track name and ID from each track
+            tracks = [(track["name"], track["id"]) for track in results["items"]]
+            # print(tracks)
+
+            return tracks
+        except spotipy.exceptions.SpotifyException as e:
+            print(f"Error occurred while getting tracks for album {album_id}: {e}")
 
     def select_id(self, table_name):
         """
