@@ -281,21 +281,22 @@ class SpotifyClass:
         ids = [row[0] for row in rows]
         return ids
 
-    def reset_not_found(self, album_id):
+    def reset_not_found(self, album_ids):
         """
-        resets the album in music_albums_unique to False for albums that are not found
+        Resets the album in music_albums_unique to False for albums that are not found
         """
         try:
             cur = self.conn.cursor()
+            # Convert the list of IDs to a string of comma-separated values
+            ids_str = ",".join(map(str, album_ids))
             cur.execute(
+                f"""
+                UPDATE music_albums_unique SET checked = False WHERE id NOT IN ({ids_str})
                 """
-                UPDATE music_albums_unique SET checked = False WHERE id = %s
-                """,
-                (album_id,),
             )
             self.conn.commit()
         except Exception as e:
-            print("Error in update_checked_status:", e)
+            print("Error in reset_not_found:", e)
 
     def update_checked_status(self, album_id):
         """
