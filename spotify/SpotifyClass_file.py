@@ -36,8 +36,8 @@ class SpotifyClass:
         print("Database connected")
 
         # load the environment variables for the spotipy library
-        self.spotipy_client_id = os.getenv("SPOTIPY_CLIENT2")
-        self.spotipy_client_secret = os.getenv("SPOTIPY_SECRET2")
+        self.spotipy_client_id = os.getenv("SPOTIPY_CLIENT3")
+        self.spotipy_client_secret = os.getenv("SPOTIPY_SECRET3")
         # print(
         #     f"Client ID: {self.spotipy_client_id}, Secret: {self.spotipy_client_secret}"
         # )
