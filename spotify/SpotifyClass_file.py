@@ -270,6 +270,33 @@ class SpotifyClass:
                     else:
                         print(f"Error occurred while searching for album: {e}")
 
+    def select_id(self, table_name):
+        """
+        Gets the ID of all the rows in a table
+        """
+        cur = self.conn.cursor()
+        cur.execute(f"SELECT * FROM {table_name}")
+        rows = cur.fetchall()
+        # Extract the first element of each tuple and add it to a set
+        ids = [row[0] for row in rows]
+        return ids
+
+    def reset_not_found(self, album_id):
+        """
+        resets the album in music_albums_unique to False for albums that are not found
+        """
+        try:
+            cur = self.conn.cursor()
+            cur.execute(
+                """
+                UPDATE music_albums_unique SET checked = False WHERE id = %s
+                """,
+                (album_id,),
+            )
+            self.conn.commit()
+        except Exception as e:
+            print("Error in update_checked_status:", e)
+
     def update_checked_status(self, album_id):
         """
         Update the checked status of an album in the music_albums_unique table
