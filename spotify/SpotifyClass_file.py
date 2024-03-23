@@ -120,11 +120,11 @@ class SpotifyClass:
                     print("Table spotify_data_albums exists")
                     return True
                 else:
-                    self.create_spotify_data_table()
+                    self.create_spotify_data_table_album()
         except Exception as e:
             print(f"Error in ensuring table exists: {e}")
 
-    def create_spotify_data_table(self):
+    def create_spotify_data_table_album(self):
         try:
             print("Attempting to create spotify_data_albums table...")
             create_table_query = """
