@@ -15,6 +15,7 @@ from psycopg2 import sql
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import csv
+import re
 
 
 class SpotifyClass:
@@ -269,6 +270,32 @@ class SpotifyClass:
                         continue
                     else:
                         print(f"Error occurred while searching for album: {e}")
+
+    def search_track(self, spotify_data_albums):
+        """
+        Search for all the tracks in the albums that we have
+        """
+        album_tracks = {}
+
+        for album in spotify_data_albums:
+            album_uri = album["album_uri"]
+            artist_uri = album["artist_uri"]
+
+            # Extract the IDs from the URIs
+            album_id_match = re.search(r"spotify:album:(\w+)", album_uri)
+            artist_id_match = re.search(r"spotify:artist:(\w+)", artist_uri)
+
+            if album_id_match and artist_id_match:
+                album_id = album_id_match.group(1)
+                artist_id = artist_id_match.group(1)
+
+                # Get the tracks of the album
+                tracks = self.get_album_tracks(album_id)
+
+                # Add the tracks to the dictionary
+                album_tracks[album_id] = tracks
+
+        return album_tracks
 
     def select_id(self, table_name):
         """
