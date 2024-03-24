@@ -296,6 +296,9 @@ class SpotifyClass:
 
                 # Add the tracks to the album dictionary
                 album["searched_tracks"] = tracks
+
+                # Update the checked status
+                self.update_checked_status("spotify_data_albums", album["id"])
         return spotify_data_albums
 
     def get_album_tracks(self, album_id):
