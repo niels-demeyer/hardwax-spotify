@@ -301,6 +301,23 @@ class SpotifyClass:
                 self.update_checked_status("spotify_data_albums", album["id"])
         return spotify_data_albums
 
+    def get_album_tracks(self, album_id):
+        """
+        Get the tracks of an album
+        """
+        try:
+            # Get the album's tracks
+            results = self.sp.album_tracks(album_id)
+
+            # Extract the track name and ID from each track
+            tracks = [
+                {"name": track["name"], "id": track["id"]} for track in results["items"]
+            ]
+
+            return tracks
+        except Exception as e:
+            print(f"Error occurred while getting tracks for album {album_id}: {e}")
+
     def make_spotify_data_songs_table(self):
         """
         Makes the spotify_data_songs table
