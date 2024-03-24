@@ -327,7 +327,7 @@ class SpotifyClass:
             cur.execute(
                 """
                 CREATE TABLE IF NOT EXISTS spotify_data_songs (
-                    id VARCHAR(255) PRIMARY KEY,
+                    id VARCHAR(255),
                     track VARCHAR(255),
                     track_id VARCHAR(255) UNIQUE,
                     artist VARCHAR(255),
