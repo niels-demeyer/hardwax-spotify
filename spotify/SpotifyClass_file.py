@@ -301,23 +301,6 @@ class SpotifyClass:
                 self.update_checked_status("spotify_data_albums", album["id"])
         return spotify_data_albums
 
-    def get_album_tracks(self, album_id):
-        """
-        Get the tracks of an album
-        """
-        try:
-            # Get the album's tracks
-            results = self.sp.album_tracks(album_id)
-
-            # Extract the track name and ID from each track
-            tracks = [
-                {"name": track["name"], "id": track["id"]} for track in results["items"]
-            ]
-
-            return tracks
-        except Exception as e:
-            print(f"Error occurred while getting tracks for album {album_id}: {e}")
-
     def make_spotify_data_songs_table(self):
         """
         Makes the spotify_data_songs table
@@ -327,9 +310,9 @@ class SpotifyClass:
             cur.execute(
                 """
                 CREATE TABLE IF NOT EXISTS spotify_data_songs (
-                    id SERIAL PRIMARY KEY,
+                    id VARCHAR(255) PRIMARY KEY,
                     track VARCHAR(255),
-                    track_id VARCHAR(255),
+                    track_id VARCHAR(255) UNIQUE,
                     artist VARCHAR(255),
                     album VARCHAR(255),
                     album_uri VARCHAR(255),
@@ -355,6 +338,7 @@ class SpotifyClass:
                         album_name = album.get("album", None)
                         artist_uri = album.get("artist_uri", None)
                         album_uri = album.get("album_uri", None)
+                        id = album.get("id", None)
                         for track in album["searched_tracks"]:
                             track_name = track.get("name", None)
                             track_id = track.get("id", None)
@@ -362,12 +346,13 @@ class SpotifyClass:
                             cur.execute(
                                 sql.SQL(
                                     """
-                                    INSERT INTO spotify_data_songs (track, track_id, artist, album, album_uri, artist_uri)
-                                    VALUES (%s, %s, %s, %s, %s, %s)
+                                    INSERT INTO spotify_data_songs (id, track, track_id, artist, album, album_uri, artist_uri)
+                                    VALUES (%s, %s, %s, %s, %s, %s, %s)
                                     ON CONFLICT (track_id) DO NOTHING;
                                     """
                                 ),
                                 (
+                                    id,
                                     track_name,
                                     track_id,
                                     artist,
