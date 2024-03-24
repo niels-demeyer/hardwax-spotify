@@ -348,6 +348,7 @@ class SpotifyClass:
         """
         try:
             with self.conn.cursor() as cur:
+                self.make_spotify_data_songs_table()
                 for album in spotify_data_albums:
                     if "searched_tracks" in album:
                         artist = album.get("artist", None)
