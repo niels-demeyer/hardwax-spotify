@@ -278,7 +278,7 @@ class SpotifyClass:
         """
         for i, album in enumerate(spotify_data_albums):
             # Stop after 50 albums
-            if i >= 50:
+            if i >= 250:
                 break
 
             album_uri = album["album_uri"]
@@ -293,6 +293,7 @@ class SpotifyClass:
 
                 # Get the tracks of the album
                 tracks = self.get_album_tracks(album_id)
+                print(f"Searching for tracks in album {album_id}")
 
                 # Add the tracks to the album dictionary
                 album["searched_tracks"] = tracks
