@@ -131,6 +131,7 @@ class SpotifyClass:
             create_table_query = """
             CREATE TABLE IF NOT EXISTS spotify_data_albums (
                 id SERIAL PRIMARY KEY,
+                checked BOOLEAN DEFAULT FALSE,
                 artist VARCHAR(255),
                 album VARCHAR(255),
                 album_uri VARCHAR(255),
