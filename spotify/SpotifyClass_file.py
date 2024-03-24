@@ -310,12 +310,74 @@ class SpotifyClass:
             results = self.sp.album_tracks(album_id)
 
             # Extract the track name and ID from each track
-            tracks = [(track["name"], track["id"]) for track in results["items"]]
-            # print(tracks)
+            tracks = [
+                {"name": track["name"], "id": track["id"]} for track in results["items"]
+            ]
 
             return tracks
-        except spotipy.exceptions.SpotifyException as e:
+        except Exception as e:
             print(f"Error occurred while getting tracks for album {album_id}: {e}")
+
+    def make_spotify_data_songs_table(self):
+        """
+        Makes the spotify_data_songs table
+        """
+        try:
+            cur = self.conn.cursor()
+            cur.execute(
+                """
+                CREATE TABLE IF NOT EXISTS spotify_data_songs (
+                    id SERIAL PRIMARY KEY,
+                    track VARCHAR(255),
+                    track_id VARCHAR(255),
+                    artist VARCHAR(255),
+                    album VARCHAR(255),
+                    album_uri VARCHAR(255),
+                    artist_uri VARCHAR(255),
+                    UNIQUE(track, track_id)
+                )
+                """
+            )
+            self.conn.commit()
+        except Exception as e:
+            print(f"Error in making spotify_data_songs table: {e}")
+
+    def save_to_spotify_data_songs(self, spotify_data_albums):
+        """
+        Save the track results to the database.
+        """
+        try:
+            with self.conn.cursor() as cur:
+                for album in spotify_data_albums:
+                    if "searched_tracks" in album:
+                        artist = album.get("artist", None)
+                        album_name = album.get("album", None)
+                        artist_uri = album.get("artist_uri", None)
+                        album_uri = album.get("album_uri", None)
+                        for track in album["searched_tracks"]:
+                            track_name = track.get("name", None)
+                            track_id = track.get("id", None)
+
+                            cur.execute(
+                                sql.SQL(
+                                    """
+                                    INSERT INTO spotify_data_songs (track, track_id, artist, album, album_uri, artist_uri)
+                                    VALUES (%s, %s, %s, %s, %s, %s)
+                                    ON CONFLICT (track_id) DO NOTHING;
+                                    """
+                                ),
+                                (
+                                    track_name,
+                                    track_id,
+                                    artist,
+                                    album_name,
+                                    album_uri,
+                                    artist_uri,
+                                ),
+                            )
+                self.conn.commit()
+        except Exception as e:
+            print(f"Error in saving to database: {e}")
 
     def select_id(self, table_name):
         """
