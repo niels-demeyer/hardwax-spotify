@@ -262,7 +262,7 @@ class SpotifyClass:
                         not_found.append((album, artist))  # append as a tuple
                         print(f"Album not found: {album} by {artist}")
                         self.save_to_csv(input_data=not_found)
-                    self.update_checked_status(album_id)
+                    self.update_checked_status("music_albums_unique", album_id)
                     break
                 except spotipy.exceptions.SpotifyException as e:
                     if e.http_status == 429:
@@ -342,15 +342,15 @@ class SpotifyClass:
         except Exception as e:
             print("Error in reset_not_found:", e)
 
-    def update_checked_status(self, album_id):
+    def update_checked_status(self, table, album_id):
         """
         Update the checked status of an album in the music_albums_unique table
         """
         try:
             cur = self.conn.cursor()
             cur.execute(
-                """
-                UPDATE music_albums_unique SET checked = True WHERE id = %s
+                f"""
+                UPDATE {table} SET checked = True WHERE id = %s
                 """,
                 (album_id,),
             )
@@ -417,7 +417,7 @@ class SpotifyClass:
         """
         try:
             cur = self.conn.cursor()
-            cur.execute(f"SELECT * FROM {table_name}")
+            cur.execute(f"SELECT * FROM {table_name} where checked = False")
             column = [description[0] for description in cur.description]
             result = [dict(zip(column, row)) for row in cur.fetchall()]
             return result
