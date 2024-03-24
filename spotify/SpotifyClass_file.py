@@ -278,7 +278,7 @@ class SpotifyClass:
         """
         for i, album in enumerate(spotify_data_albums):
             # Stop after 50 albums
-            if i >= 250:
+            if i >= 1000:
                 break
 
             album_uri = album["album_uri"]
