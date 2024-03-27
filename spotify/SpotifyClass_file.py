@@ -494,41 +494,20 @@ class SpotifyClass:
         except Exception as e:
             print("Error in get_unique_music_albums:", e)
 
-    def get_genre_by_id(self, id):
-        """
-        Get the genre of a track by its ID fro m the music_albums table.
-        """
-        cur = self.conn.cursor()
-        cur.execute(
-            """
-            SELECT genre FROM music_albums WHERE id = %s
-            """,
-            (id,),
-        )
-        genre = cur.fetchone()
-        return genre
-
     def add_genre_playlist(self):
         """
         Add the genre of spotify_data_song to each item and save the dictionary as a table.
         """
-        spotify_data_songs = self.select_table_dict("spotify_data_songs")
-        for song in spotify_data_songs:
-            id = song["id"]
-            genre = self.get_genre_by_id(id)
-            song["genre"] = genre
-        self.update_spotify_genre_table(spotify_data_songs)
+        cursor = self.conn.cursor()
 
-    def update_spotify_genre_table(self, spotify_data_songs):
+        # Update the genre of songs in one SQL query
+        cursor.execute(
+            """
+            UPDATE spotify_data_songs
+            SET genre = music_albums.genre
+            FROM music_albums
+            WHERE spotify_data_songs.id::text = music_albums.id::text
         """
-        Update the spotify_data_songs table with the new genre information.
-        """
-        cur = self.conn.cursor()
-        for song in spotify_data_songs:
-            cur.execute(
-                """
-                UPDATE spotify_data_songs SET genre = %s WHERE id = %s
-                """,
-                (song["genre"], song["id"]),
-            )
+        )
+
         self.conn.commit()
