@@ -511,3 +511,65 @@ class SpotifyClass:
         )
 
         self.conn.commit()
+
+    def get_songs_split_by_genre(self):
+        """
+        Fetch all rows from the spotify_data_songs table, order them by id,
+        split them by genre, and create a new table for each genre.
+        """
+        cursor = self.conn.cursor()
+
+        # Fetch all rows from the spotify_data_songs table and order them by id
+        cursor.execute("SELECT * FROM spotify_data_songs ORDER BY id")
+        songs = cursor.fetchall()
+
+        # Convert the rows to dictionaries
+        columns = [desc[0] for desc in cursor.description]
+        songs = [dict(zip(columns, song)) for song in songs]
+
+        # Split the songs by genre
+        songs_by_genre = {}
+        genre_counts = {}
+        for song in songs:
+            genre = song["genre"]
+            if genre not in songs_by_genre:
+                songs_by_genre[genre] = []
+                genre_counts[genre] = 1
+            else:
+                genre_counts[genre] += 1
+
+            # If the number of songs for a genre exceeds 10000, create a new genre category
+            if genre_counts[genre] > 10000:
+                count = genre_counts[genre] // 10000
+                new_genre = f"{genre}_{count}"
+                if new_genre not in songs_by_genre:
+                    songs_by_genre[new_genre] = []
+                songs_by_genre[new_genre].append(song)
+                genre_counts[new_genre] = len(songs_by_genre[new_genre])
+            else:
+                songs_by_genre[genre].append(song)
+
+        # Create a new table for each genre
+        for genre, songs in songs_by_genre.items():
+            table_name = genre.replace(
+                " ", "_"
+            )  # Replace spaces with underscores to create a valid SQL table name
+
+            # Check if the table already exists
+            cursor.execute(f"SELECT to_regclass('{table_name}')")
+            if not cursor.fetchone()[0]:
+                # If the table does not exist, create it
+                cursor.execute(
+                    f'CREATE TABLE "{table_name}" AS SELECT * FROM spotify_data_songs WHERE genre = %s',
+                    (genre,),
+                )
+
+            # Insert the songs into the table, avoiding duplicate entries
+            for song in songs:
+                values = tuple(
+                    str(song[column])[:255] for column in columns
+                )  # Truncate the string to 255 characters
+                insert_sql = f'INSERT INTO "{table_name}" VALUES ({", ".join(["%s"] * len(values))}) ON CONFLICT DO NOTHING'
+                cursor.execute(insert_sql, values)
+
+        self.conn.commit()  # Commit the changes to the database
