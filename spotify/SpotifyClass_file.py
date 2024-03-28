@@ -37,8 +37,8 @@ class SpotifyClass:
         print("Database connected")
 
         # load the environment variables for the spotipy library
-        self.spotipy_client_id = os.getenv("SPOTIPY_CLIENT2")
-        self.spotipy_client_secret = os.getenv("SPOTIPY_SECRET2")
+        self.spotipy_client_id = os.getenv("SPOTIPY_CLIENT3")
+        self.spotipy_client_secret = os.getenv("SPOTIPY_SECRET3")
         # print(
         #     f"Client ID: {self.spotipy_client_id}, Secret: {self.spotipy_client_secret}"
         # )
@@ -493,12 +493,12 @@ class SpotifyClass:
         """
         try:
             cur = self.conn.cursor()
-            cur.execute(f"SELECT * FROM {table_name} where checked = False")
+            cur.execute(f"SELECT * FROM {table_name} WHERE checked = False")
             column = [description[0] for description in cur.description]
             result = [dict(zip(column, row)) for row in cur.fetchall()]
             return result
         except Exception as e:
-            print("Error in get_unique_music_albums:", e)
+            print(f"Error in select_table_dict: {e}")
 
     def add_genre_playlist(self):
         """
