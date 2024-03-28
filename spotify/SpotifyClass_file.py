@@ -276,6 +276,7 @@ class SpotifyClass:
         """
         Search for all the tracks in the albums that we have
         """
+        errors = []  # List to store any errors that occur
         for i, album in enumerate(spotify_data_albums):
             # Stop after 50 albums
             if i >= 2000:
@@ -291,16 +292,21 @@ class SpotifyClass:
             if album_id_match and artist_id_match:
                 album_id = album_id_match.group(1)
 
-                # Get the tracks of the album
-                tracks = self.get_album_tracks(album_id)
-                print(f"Searching for tracks in album {album_id}")
+                try:
+                    # Get the tracks of the album
+                    tracks = self.get_album_tracks(album_id)
+                    print(f"Searching for tracks in album {album_id}")
 
-                # Add the tracks to the album dictionary
-                album["searched_tracks"] = tracks
+                    # Add the tracks to the album dictionary
+                    album["searched_tracks"] = tracks
 
-                # Update the checked status
-                self.update_checked_status("spotify_data_albums", album["id"])
-        return spotify_data_albums
+                    # Update the checked status
+                    self.update_checked_status("spotify_data_albums", album["id"])
+                except Exception as e:
+                    # If an error occurs, add it to the errors list
+                    errors.append(str(e))
+
+        return spotify_data_albums, errors
 
     def get_album_tracks(self, album_id):
         """
