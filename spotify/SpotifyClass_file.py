@@ -11,7 +11,7 @@ from fuzzywuzzy import fuzz
 from typing import List, Optional, Dict, Any
 from requests import post, get, put
 from datetime import datetime
-from psycopg2 import sql
+from psycopg2 import sql, OperationalError
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import csv
@@ -27,14 +27,19 @@ class SpotifyClass:
         self.dbpassword = os.getenv("DB_PASSWORD")
         self.dbhost = os.getenv("DB_HOST")
         self.dbport = os.getenv("DB_PORT")
-        self.conn = psycopg2.connect(
-            dbname=self.dbname,
-            user=self.dbuser,
-            password=self.dbpassword,
-            host=self.dbhost,
-            port=self.dbport,
-        )
-        print("Database connected")
+        try:
+            self.conn = psycopg2.connect(
+                dbname=self.dbname,
+                user=self.dbuser,
+                password=self.dbpassword,
+                host=self.dbhost,
+                port=self.dbport,
+            )
+            cur = self.conn.cursor()  # Create a cursor object
+            cur.execute("SELECT 1")  # Execute a simple query
+            print("Database connected")
+        except OperationalError as e:
+            print(f"The error '{e}' occurred")
 
         # load the environment variables for the spotipy library
         self.spotipy_client_id = os.getenv("SPOTIPY_CLIENT3")
