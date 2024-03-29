@@ -58,6 +58,20 @@ class SpotifyClass:
         self.music_albums_unique = None
         self.album_results = []
 
+    def print_all_databases(self):
+        try:
+            cur = self.conn.cursor()
+            cur.execute("SELECT datname FROM pg_database;")
+            rows = cur.fetchall()
+
+            for row in rows:
+                print("Database name: ", row[0])
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+        finally:
+            if cur is not None:
+                cur.close()
+
     def search_artist(self, artist_name: str) -> Dict[str, Any]:
         """
         Search for an artist on Spotify.
