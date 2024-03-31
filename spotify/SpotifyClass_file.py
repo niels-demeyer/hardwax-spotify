@@ -521,7 +521,7 @@ class SpotifyClass:
 
     def add_genre_playlist(self):
         """
-        Add the genre of spotify_data_song to each item and save the dictionary as a table.
+        Add the genre of spotify_data_song to each item and add it to the spotify_data_songs table.
         """
         cursor = self.conn.cursor()
 
