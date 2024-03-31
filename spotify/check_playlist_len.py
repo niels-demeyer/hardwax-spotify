@@ -8,3 +8,5 @@ print(table)
 for x in table:
     results = spotify.select_playlist(x)
     print(f"Playlist: {x} - {len(results)} songs found.")
+    print(results[0].keys())
+print("Done.")
