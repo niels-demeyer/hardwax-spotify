@@ -608,7 +608,9 @@ class SpotifyClass:
             """
             SELECT table_name
             FROM information_schema.tables
-            WHERE table_name != 'spotify_data_songs' 
+            WHERE table_catalog = 'scrapy_hardwax'
+            AND table_schema = 'public'
+            AND table_name != 'spotify_data_songs' 
             AND table_name != 'spotify_data_albums' 
             AND table_name != 'music_albums'
             AND table_name != 'music_albums_unique'
