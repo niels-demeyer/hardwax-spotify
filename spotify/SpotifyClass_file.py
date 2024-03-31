@@ -637,7 +637,8 @@ class SpotifyClass:
         Create a playlist with the given table name and add tracks to it.
         """
         # Create a new playlist
-        playlist = self.sp.user_playlist_create(self.sp.me()["id"], table_name)
+        playlist_name = "hardwax_" + table_name
+        playlist = self.sp.user_playlist_create(self.sp.me()["id"], playlist_name)
         print(f"Created playlist with ID: {playlist['id']}")  # print the playlist ID
 
         # Validate track_ids and convert them to URIs
@@ -656,7 +657,7 @@ class SpotifyClass:
                 self.sp.playlist_add_items(playlist["id"], chunk)
 
         # Update the playlist description with the current date
-        description = f"Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+        description = f"Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} check out hardwax.com for more!"
         self.sp.playlist_change_details(playlist["id"], description=description)
 
         return playlist
