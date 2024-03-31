@@ -647,8 +647,12 @@ class SpotifyClass:
         ]
 
         # Add tracks to the new playlist
+
         if valid_track_uris:  # only proceed if there are valid track URIs
-            self.sp.playlist_add_items(playlist["id"], valid_track_uris)
+            # Split the list of URIs into chunks of 100 tracks
+            for i in range(0, len(valid_track_uris), 100):
+                chunk = valid_track_uris[i : i + 100]
+                self.sp.playlist_add_items(playlist["id"], chunk)
 
         # Update the playlist description with the current date
         description = f"Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
