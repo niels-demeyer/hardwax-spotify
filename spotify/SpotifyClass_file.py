@@ -44,15 +44,16 @@ class SpotifyClass:
         # load the environment variables for the spotipy library
         self.spotipy_client_id = os.getenv("SPOTIPY_CLIENT3")
         self.spotipy_client_secret = os.getenv("SPOTIPY_SECRET3")
-        self.spotipy_redirect_uri = "http://localhost:8085"
+        self.spotipy_redirect_uri = "https://localhost:8085"
         self.auth_manager = SpotifyOAuth(
             client_id=self.spotipy_client_id,
             client_secret=self.spotipy_client_secret,
             redirect_uri=self.spotipy_redirect_uri,
-            scope="playlist-modify-private",  # add the playlist-modify-private scope
+            scope="playlist-modify-public",  # add the playlist-modify-public scope
         )
         self.sp = spotipy.Spotify(auth_manager=self.auth_manager)
-
+        # Start the authorization process
+        self.sp.me()
         # Define the variables
         self.spotify_data_albums = []
         self.music_albums_all = []
@@ -636,9 +637,18 @@ class SpotifyClass:
         """
         # Create a new playlist
         playlist = self.sp.user_playlist_create(self.sp.me()["id"], table_name)
+        print(f"Created playlist with ID: {playlist['id']}")  # print the playlist ID
+
+        # Validate track_ids and convert them to URIs
+        valid_track_uris = [
+            f"spotify:track:{track_id}"
+            for track_id in track_ids
+            if re.match("^[a-zA-Z0-9]+$", track_id)
+        ]
 
         # Add tracks to the new playlist
-        self.sp.playlist_add_items(playlist["id"], track_ids)
+        if valid_track_uris:  # only proceed if there are valid track URIs
+            self.sp.playlist_add_items(playlist["id"], valid_track_uris)
 
         # Update the playlist description with the current date
         description = f"Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"

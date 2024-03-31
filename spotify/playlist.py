@@ -11,8 +11,9 @@ for x in table:
     print(results[0].keys())
 
     # Assuming 'id' is the key for the track ID in each dictionary in results
-    track_ids = [result["id"] for result in results]
-
+    track_ids = [
+        result.get("track_id") for result in results if result.get("id") is not None
+    ]
     # Create and populate a Spotify playlist for each table
     spotify.create_and_populate_playlist(x, track_ids)
 
