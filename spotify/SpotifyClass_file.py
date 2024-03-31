@@ -16,6 +16,7 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
 import re
 from datetime import datetime
+import csv
 
 
 class SpotifyClass:
