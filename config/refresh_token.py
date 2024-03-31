@@ -1,11 +1,15 @@
 import webbrowser
 import requests
 from flask import Flask, request
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 # You should replace these placeholders with your actual Spotify client values
-CLIENT_ID = #insert client_ID (get this from developer dashboard)
-CLIENT_SECRET = #insert client_secret (get this from developer dashboard)
-REDIRECT_URI = "http://localhost:8090/callback"
+CLIENT_ID = os.getenv("CLIENT_ID")
+CLIENT_SECRET = os.getenv("CLIENT_SECRET")
+REDIRECT_URI = "http://localhost/8075"
 
 
 app = Flask(__name__)

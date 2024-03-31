@@ -10,12 +10,12 @@ from scrapy.exceptions import DropItem
 from dotenv import load_dotenv
 import os
 
-env_path = r"../../config/.env"
-load_dotenv(dotenv_path=env_path)
+load_dotenv()
+
 host = os.getenv("DB_HOST")
 user = os.getenv("DB_USER")
 password = os.getenv("DB_PASSWORD")
-dbname = "hardwax"
+dbname = os.getenv("DB_NAME")
 
 
 class PostgreSQLPipeline(object):
@@ -50,7 +50,7 @@ class PostgreSQLPipeline(object):
     def process_item(self, item, spider):
         self.cursor.execute(
             """
-            INSERT INTO music_albums (artist, album, label, label_issue, genre, track) 
+            INSERT INTO music_albums (artist, album, label, label_issue, genre, track)
             VALUES (%s, %s, %s, %s, %s, %s)
             ON CONFLICT (artist, album, genre, track) DO NOTHING
             """,

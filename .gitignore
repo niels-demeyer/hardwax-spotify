@@ -1,1 +1,5 @@
 hardwax/hardwax/__pycache__/
+.env
+__pycache__
+.cache
+*.csv
