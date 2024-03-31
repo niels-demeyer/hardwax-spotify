@@ -13,8 +13,7 @@ from requests import post, get, put
 from datetime import datetime
 from psycopg2 import sql, OperationalError
 import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
-import csv
+from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
 import re
 from datetime import datetime
 
@@ -45,11 +44,12 @@ class SpotifyClass:
         # load the environment variables for the spotipy library
         self.spotipy_client_id = os.getenv("SPOTIPY_CLIENT3")
         self.spotipy_client_secret = os.getenv("SPOTIPY_SECRET3")
-        # print(
-        #     f"Client ID: {self.spotipy_client_id}, Secret: {self.spotipy_client_secret}"
-        # )
-        self.auth_manager = SpotifyClientCredentials(
-            client_id=self.spotipy_client_id, client_secret=self.spotipy_client_secret
+        self.spotipy_redirect_uri = "http://localhost:8085"
+        self.auth_manager = SpotifyOAuth(
+            client_id=self.spotipy_client_id,
+            client_secret=self.spotipy_client_secret,
+            redirect_uri=self.spotipy_redirect_uri,
+            scope="playlist-modify-private",  # add the playlist-modify-private scope
         )
         self.sp = spotipy.Spotify(auth_manager=self.auth_manager)
 
