@@ -624,7 +624,7 @@ class SpotifyClass:
         Select all the rows from a playlist table
         """
         cursor = self.conn.cursor()
-        cursor.execute(f"SELECT * FROM {table_name}")
+        cursor.execute(f'SELECT * FROM "{table_name}"')
         columns = [desc[0] for desc in cursor.description]
         rows = cursor.fetchall()
         return [dict(zip(columns, row)) for row in rows]
