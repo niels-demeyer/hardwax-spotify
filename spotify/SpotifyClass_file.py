@@ -16,6 +16,7 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import csv
 import re
+from datetime import datetime
 
 
 class SpotifyClass:
@@ -628,3 +629,19 @@ class SpotifyClass:
         columns = [desc[0] for desc in cursor.description]
         rows = cursor.fetchall()
         return [dict(zip(columns, row)) for row in rows]
+
+    def create_and_populate_playlist(self, table_name, track_ids):
+        """
+        Create a playlist with the given table name and add tracks to it.
+        """
+        # Create a new playlist
+        playlist = self.sp.user_playlist_create(self.sp.me()["id"], table_name)
+
+        # Add tracks to the new playlist
+        self.sp.playlist_add_items(playlist["id"], track_ids)
+
+        # Update the playlist description with the current date
+        description = f"Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+        self.sp.playlist_change_details(playlist["id"], description=description)
+
+        return playlist
