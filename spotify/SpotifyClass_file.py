@@ -616,6 +616,7 @@ class SpotifyClass:
             AND table_name != 'spotify_data_albums' 
             AND table_name != 'music_albums'
             AND table_name != 'music_albums_unique'
+            AND table_name != 'labels'
             """
         )
         tables = cursor.fetchall()
