@@ -598,3 +598,21 @@ class SpotifyClass:
                 cursor.execute(insert_sql, values)
 
         self.conn.commit()  # Commit the changes to the database
+
+    def get_playlist_tables(self):
+        """
+        Get the names of the tables that store the playlists
+        """
+        cursor = self.conn.cursor()
+        cursor.execute(
+            """
+            SELECT table_name
+            FROM information_schema.tables
+            WHERE table_name is not "spotify_data_songs" 
+            AND table_name is not "spotify_data_albums" 
+            AND table_name is not "music_albums"
+            AND table_name is not "music_albums_unique"
+            """
+        )
+        tables = cursor.fetchall()
+        return [table[0] for table in tables]
