@@ -2,4 +2,5 @@ from SpotifyClass_file import SpotifyClass
 
 spotify = SpotifyClass()
 
-spotify.print_all_databases()
+table = spotify.get_playlist_tables()
+print(table)
