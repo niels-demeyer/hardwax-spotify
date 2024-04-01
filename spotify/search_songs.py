@@ -1,3 +1,9 @@
+"""
+
+With this script, we can search for songs in the Spotify API. We can search for songs by name, artist by using the spotify ID that we got from running the search_albums script. The search results are stored in the 'spotify_data_songs' table.
+
+"""
+
 from SpotifyClass_file import SpotifyClass
 
 spotify = SpotifyClass()
