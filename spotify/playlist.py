@@ -1,3 +1,11 @@
+"""
+
+With this script we can create a playlist in Spotify for each table in the database. 
+We can create a playlist for each genre and populate it with the songs that are in the 'genre_suffix' table. The playlist will be named after the genre.
+After the playlist is changed the descritpion will be updated with the date in the playlist.
+It is important to note that the Spotify API has a limit of 11000 songs per playlist.
+"""
+
 from SpotifyClass_file import SpotifyClass
 
 spotify = SpotifyClass()  # make sure to pass your Spotify credentials if needed
