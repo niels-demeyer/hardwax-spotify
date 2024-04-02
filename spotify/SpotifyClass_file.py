@@ -615,12 +615,11 @@ class SpotifyClass:
                 )
 
             # Insert the songs into the table, avoiding duplicate entries
-            for song in songs:
-                values = tuple(
-                    str(song[column])[:255] for column in columns
-                )  # Truncate the string to 255 characters
-                insert_sql = f'INSERT INTO "{table_name}" VALUES ({", ".join(["%s"] * len(values))}) ON CONFLICT DO NOTHING'
-                cursor.execute(insert_sql, values)
+            values = [
+                tuple(str(song[column])[:255] for column in columns) for song in songs
+            ]  # Truncate the string to 255 characters
+            insert_sql = f'INSERT INTO "{table_name}" VALUES ({", ".join(["%s"] * len(values[0]))}) ON CONFLICT DO NOTHING'
+            cursor.executemany(insert_sql, values)
 
         self.conn.commit()  # Commit the changes to the database
 
