@@ -528,15 +528,37 @@ class SpotifyClass:
         """
         cursor = self.conn.cursor()
 
-        # Update the genre of songs in one SQL query
-        cursor.execute(
-            """
-            UPDATE spotify_data_songs
-            SET genre = music_albums.genre
-            FROM music_albums
-            WHERE spotify_data_songs.id::text = music_albums.id::text
-        """
-        )
+        try:
+            # Update the genre of songs in one SQL query
+            cursor.execute(
+                """
+                UPDATE spotify_data_songs
+                SET genre = music_albums.genre
+                FROM music_albums
+                WHERE spotify_data_songs.id::text = music_albums.id::text
+                """
+            )
+        except psycopg2.errors.UniqueViolation:
+            self.conn.rollback()
+            cursor.execute(
+                """
+                DELETE FROM spotify_data_songs
+                WHERE id IN (
+                    SELECT spotify_data_songs.id
+                    FROM spotify_data_songs
+                    JOIN music_albums ON spotify_data_songs.id::text = music_albums.id::text
+                    WHERE spotify_data_songs.genre = music_albums.genre
+                )
+                """
+            )
+            cursor.execute(
+                """
+                UPDATE spotify_data_songs
+                SET genre = music_albums.genre
+                FROM music_albums
+                WHERE spotify_data_songs.id::text = music_albums.id::text
+                """
+            )
 
         self.conn.commit()
 
