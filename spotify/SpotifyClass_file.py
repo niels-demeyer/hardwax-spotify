@@ -529,6 +529,7 @@ class SpotifyClass:
         cursor = self.conn.cursor()
 
         try:
+            print("Updating genres...")
             # Update the genre of songs in one SQL query
             cursor.execute(
                 """
@@ -539,8 +540,11 @@ class SpotifyClass:
                 AND spotify_data_songs.genre IS NULL
                 """
             )
+            print("Genres updated successfully.")
         except psycopg2.errors.UniqueViolation:
+            print("UniqueViolation error occurred. Rolling back...")
             self.conn.rollback()
+            print("Deleting conflicting rows...")
             cursor.execute(
                 """
                 DELETE FROM spotify_data_songs
@@ -553,6 +557,7 @@ class SpotifyClass:
                 )
                 """
             )
+            print("Conflicting rows deleted. Updating genres again...")
             cursor.execute(
                 """
                 UPDATE spotify_data_songs
@@ -562,8 +567,10 @@ class SpotifyClass:
                 AND spotify_data_songs.genre IS NULL
                 """
             )
+            print("Genres updated successfully after resolving conflicts.")
 
         self.conn.commit()
+        print("Changes committed to the database.")
 
     def get_songs_split_by_genre(self):
         """
