@@ -536,6 +536,7 @@ class SpotifyClass:
                 SET genre = music_albums.genre
                 FROM music_albums
                 WHERE spotify_data_songs.id::text = music_albums.id::text
+                AND spotify_data_songs.genre IS NULL
                 """
             )
         except psycopg2.errors.UniqueViolation:
@@ -548,6 +549,7 @@ class SpotifyClass:
                     FROM spotify_data_songs
                     JOIN music_albums ON spotify_data_songs.id::text = music_albums.id::text
                     WHERE spotify_data_songs.genre = music_albums.genre
+                    AND spotify_data_songs.genre IS NULL
                 )
                 """
             )
@@ -557,6 +559,7 @@ class SpotifyClass:
                 SET genre = music_albums.genre
                 FROM music_albums
                 WHERE spotify_data_songs.id::text = music_albums.id::text
+                AND spotify_data_songs.genre IS NULL
                 """
             )
 
@@ -614,7 +617,9 @@ class SpotifyClass:
 
         # Create a new table for each genre
         for genre, songs in songs_by_genre.items():
-            table_name = genre.replace(" ", "_")  # Replace spaces with underscores to create a valid SQL table name
+            table_name = genre.replace(
+                " ", "_"
+            )  # Replace spaces with underscores to create a valid SQL table name
 
             # Check if the table already exists
             cursor.execute(f"SELECT to_regclass('{table_name}')")
