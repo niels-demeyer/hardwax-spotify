@@ -571,33 +571,40 @@ class SpotifyClass:
 
         # Fetch all rows from the spotify_data_songs table and order them by id
         cursor.execute("SELECT * FROM spotify_data_songs ORDER BY id")
-        songs = cursor.fetchall()
 
-        # Convert the rows to dictionaries
-        columns = [desc[0] for desc in cursor.description]
-        songs = [dict(zip(columns, song)) for song in songs]
-
-        # Split the songs by genre
+        # Initialize the songs_by_genre and genre_counts dictionaries
         songs_by_genre = {}
         genre_counts = {}
-        for song in songs:
-            genre = song["genre"]
-            if genre not in songs_by_genre:
-                songs_by_genre[genre] = []
-                genre_counts[genre] = 1
-            else:
-                genre_counts[genre] += 1
 
-            # If the number of songs for a genre exceeds 10000, create a new genre category
-            if genre_counts[genre] > 10000:
-                count = genre_counts[genre] // 10000
-                new_genre = f"{genre}_{count}"
-                if new_genre not in songs_by_genre:
-                    songs_by_genre[new_genre] = []
-                songs_by_genre[new_genre].append(song)
-                genre_counts[new_genre] = len(songs_by_genre[new_genre])
-            else:
-                songs_by_genre[genre].append(song)
+        while True:
+            # Fetch a chunk of songs
+            songs = cursor.fetchmany(1000)
+            if not songs:
+                break
+
+            # Convert the rows to dictionaries
+            columns = [desc[0] for desc in cursor.description]
+            songs = [dict(zip(columns, song)) for song in songs]
+
+            # Split the songs by genre
+            for song in songs:
+                genre = song["genre"]
+                if genre not in songs_by_genre:
+                    songs_by_genre[genre] = []
+                    genre_counts[genre] = 1
+                else:
+                    genre_counts[genre] += 1
+
+                # If the number of songs for a genre exceeds 10000, create a new genre category
+                if genre_counts[genre] > 10000:
+                    count = genre_counts[genre] // 10000
+                    new_genre = f"{genre}_{count}"
+                    if new_genre not in songs_by_genre:
+                        songs_by_genre[new_genre] = []
+                    songs_by_genre[new_genre].append(song)
+                    genre_counts[new_genre] = len(songs_by_genre[new_genre])
+                else:
+                    songs_by_genre[genre].append(song)
 
         # Create a new table for each genre
         for genre, songs in songs_by_genre.items():
