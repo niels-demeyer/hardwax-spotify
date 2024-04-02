@@ -576,11 +576,15 @@ class SpotifyClass:
         songs_by_genre = {}
         genre_counts = {}
 
+        chunk_count = 0
         while True:
             # Fetch a chunk of songs
             songs = cursor.fetchmany(1000)
             if not songs:
                 break
+
+            chunk_count += 1
+            print(f"Processing chunk {chunk_count}...")
 
             # Convert the rows to dictionaries
             columns = [desc[0] for desc in cursor.description]
@@ -606,11 +610,11 @@ class SpotifyClass:
                 else:
                     songs_by_genre[genre].append(song)
 
+        print("Finished processing songs. Creating tables...")
+
         # Create a new table for each genre
         for genre, songs in songs_by_genre.items():
-            table_name = genre.replace(
-                " ", "_"
-            )  # Replace spaces with underscores to create a valid SQL table name
+            table_name = genre.replace(" ", "_")  # Replace spaces with underscores to create a valid SQL table name
 
             # Check if the table already exists
             cursor.execute(f"SELECT to_regclass('{table_name}')")
@@ -621,6 +625,8 @@ class SpotifyClass:
                     (genre,),
                 )
 
+            print(f"Created table for genre {genre}.")
+
             # Insert the songs into the table, avoiding duplicate entries
             values = [
                 tuple(str(song[column])[:255] for column in columns) for song in songs
@@ -628,7 +634,11 @@ class SpotifyClass:
             insert_sql = f'INSERT INTO "{table_name}" VALUES ({", ".join(["%s"] * len(values[0]))}) ON CONFLICT DO NOTHING'
             cursor.executemany(insert_sql, values)
 
+            print(f"Inserted songs into table for genre {genre}.")
+
         self.conn.commit()  # Commit the changes to the database
+
+        print("Finished committing changes to the database.")
 
     def get_playlist_tables(self):
         """
