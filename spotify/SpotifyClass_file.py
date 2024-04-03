@@ -581,6 +581,12 @@ class SpotifyClass:
         """
         cursor = self.conn.cursor()
 
+        # Test the database connection
+        cursor.execute("SELECT 1")
+        if not cursor.fetchone()[0]:
+            print("Failed to connect to the database.")
+            return
+
         # Fetch all rows from the spotify_data_songs table and order them by id
         cursor.execute("SELECT * FROM spotify_data_songs ORDER BY id")
 
@@ -634,21 +640,29 @@ class SpotifyClass:
             cursor.execute(f"SELECT to_regclass('{table_name}')")
             if not cursor.fetchone()[0]:
                 # If the table does not exist, create it
-                cursor.execute(
-                    f'CREATE TABLE "{table_name}" AS SELECT * FROM spotify_data_songs WHERE genre = %s',
-                    (genre,),
-                )
-                self.conn.commit()  # Commit after creating table
-                print(f"Created table for genre {genre}.")
+                try:
+                    cursor.execute(
+                        f'CREATE TABLE "{table_name}" AS SELECT * FROM spotify_data_songs WHERE genre = %s',
+                        (genre,),
+                    )
+                    self.conn.commit()  # Commit after creating table
+                    print(f"Created table for genre {genre}.")
+                except Exception as e:
+                    print(f"Failed to create table for genre {genre}. Error: {e}")
+                    self.conn.rollback()
 
             # Insert the songs into the table, avoiding duplicate entries
             values = [
                 tuple(str(song[column])[:255] for column in columns) for song in songs
             ]  # Truncate the string to 255 characters
             insert_sql = f'INSERT INTO "{table_name}" VALUES ({", ".join(["%s"] * len(values[0]))}) ON CONFLICT DO NOTHING'
-            cursor.executemany(insert_sql, values)
-            self.conn.commit()  # Commit after inserting songs
-            print(f"Inserted songs into table for genre {genre}.")
+            try:
+                cursor.executemany(insert_sql, values)
+                self.conn.commit()  # Commit after inserting songs
+                print(f"Inserted songs into table for genre {genre}.")
+            except Exception as e:
+                print(f"Failed to insert songs into table for genre {genre}. Error: {e}")
+                self.conn.rollback()
 
         print("Finished committing changes to the database.")
 
