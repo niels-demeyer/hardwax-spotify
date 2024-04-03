@@ -8,7 +8,7 @@ It is important to note that the Spotify API has a limit of 11000 songs per play
 
 from SpotifyClass_file import SpotifyClass
 
-spotify = SpotifyClass()  # make sure to pass your Spotify credentials if needed
+spotify = SpotifyClass()
 
 table = spotify.get_playlist_tables()
 print(table)
@@ -18,7 +18,6 @@ for x in table:
     print(f"Playlist: {x} - {len(results)} songs found.")
     print(results[0].keys())
 
-    # Assuming 'id' is the key for the track ID in each dictionary in results
     track_ids = [
         result.get("track_id") for result in results if result.get("id") is not None
     ]
