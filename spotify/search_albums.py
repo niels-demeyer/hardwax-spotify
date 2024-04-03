@@ -1,6 +1,8 @@
 """
 
-With this script, we can search for albums in the Spotify API. We can search for albums by name, artist. The search results are stored in the 'spotify_data_albums' table.
+With this script, we can search for albums in the Spotify API. We can search for albums by name, artist.
+It takes the unique albums from the 'music_albums' table and searches for them in the Spotify API.
+The search results are stored in the 'spotify_data_albums' table.
 
 """
 
