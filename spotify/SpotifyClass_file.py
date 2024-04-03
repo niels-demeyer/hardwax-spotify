@@ -541,6 +541,7 @@ class SpotifyClass:
                 """
             )
             print("Genres updated successfully.")
+            self.conn.commit()  # Commit after updating genres
         except psycopg2.errors.UniqueViolation:
             print("UniqueViolation error occurred. Rolling back...")
             self.conn.rollback()
@@ -558,6 +559,7 @@ class SpotifyClass:
                 """
             )
             print("Conflicting rows deleted. Updating genres again...")
+            self.conn.commit()  # Commit after deleting conflicting rows
             cursor.execute(
                 """
                 UPDATE spotify_data_songs
@@ -568,8 +570,8 @@ class SpotifyClass:
                 """
             )
             print("Genres updated successfully after resolving conflicts.")
+            self.conn.commit()  # Commit after updating genres again
 
-        self.conn.commit()
         print("Changes committed to the database.")
 
     def get_songs_split_by_genre(self):
@@ -636,8 +638,8 @@ class SpotifyClass:
                     f'CREATE TABLE "{table_name}" AS SELECT * FROM spotify_data_songs WHERE genre = %s',
                     (genre,),
                 )
-
-            print(f"Created table for genre {genre}.")
+                self.conn.commit()  # Commit after creating table
+                print(f"Created table for genre {genre}.")
 
             # Insert the songs into the table, avoiding duplicate entries
             values = [
@@ -645,10 +647,8 @@ class SpotifyClass:
             ]  # Truncate the string to 255 characters
             insert_sql = f'INSERT INTO "{table_name}" VALUES ({", ".join(["%s"] * len(values[0]))}) ON CONFLICT DO NOTHING'
             cursor.executemany(insert_sql, values)
-
+            self.conn.commit()  # Commit after inserting songs
             print(f"Inserted songs into table for genre {genre}.")
-
-        self.conn.commit()  # Commit the changes to the database
 
         print("Finished committing changes to the database.")
 
