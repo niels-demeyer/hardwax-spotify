@@ -43,8 +43,8 @@ class SpotifyClass:
             print(f"The error '{e}' occurred")
 
         # load the environment variables for the spotipy library
-        self.spotipy_client_id = os.getenv("SPOTIPY_CLIENT3")
-        self.spotipy_client_secret = os.getenv("SPOTIPY_SECRET3")
+        self.spotipy_client_id = os.getenv("SPOTIPY_CLIENT")
+        self.spotipy_client_secret = os.getenv("SPOTIPY_SECRET")
         self.spotipy_redirect_uri = "https://localhost:8085"
         self.auth_manager = SpotifyOAuth(
             client_id=self.spotipy_client_id,
