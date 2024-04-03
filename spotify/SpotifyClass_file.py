@@ -618,8 +618,8 @@ class SpotifyClass:
                     genre_counts[genre] += 1
 
                 # If the number of songs for a genre exceeds 10000, create a new genre category
-                if genre_counts[genre] > 10000:
-                    count = genre_counts[genre] // 10000
+                if genre_counts[genre] > 11000:
+                    count = genre_counts[genre] // 11000
                     new_genre = f"{genre}_{count}"
                     if new_genre not in songs_by_genre:
                         songs_by_genre[new_genre] = []
@@ -661,7 +661,9 @@ class SpotifyClass:
                 self.conn.commit()  # Commit after inserting songs
                 print(f"Inserted songs into table for genre {genre}.")
             except Exception as e:
-                print(f"Failed to insert songs into table for genre {genre}. Error: {e}")
+                print(
+                    f"Failed to insert songs into table for genre {genre}. Error: {e}"
+                )
                 self.conn.rollback()
 
         print("Finished committing changes to the database.")
