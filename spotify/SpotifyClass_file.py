@@ -575,10 +575,6 @@ class SpotifyClass:
         print("Changes committed to the database.")
 
     def get_songs_split_by_genre(self):
-        """
-        Fetch all rows from the spotify_data_songs table, order them by id,
-        split them by genre, and create a new table for each genre.
-        """
         cursor = self.conn.cursor()
 
         # Test the database connection
@@ -617,7 +613,7 @@ class SpotifyClass:
                 else:
                     genre_counts[genre] += 1
 
-                # If the number of songs for a genre exceeds 10000, create a new genre category
+                # If the number of songs for a genre exceeds 11000, create a new genre category
                 if genre_counts[genre] > 11000:
                     count = genre_counts[genre] // 11000
                     new_genre = f"{genre}_{count}"
@@ -632,9 +628,7 @@ class SpotifyClass:
 
         # Create a new table for each genre
         for genre, songs in songs_by_genre.items():
-            table_name = genre.replace(
-                " ", "_"
-            )  # Replace spaces with underscores to create a valid SQL table name
+            table_name = genre.replace(" ", "_")
 
             # Check if the table already exists
             cursor.execute(f"SELECT to_regclass('{table_name}')")
@@ -642,8 +636,10 @@ class SpotifyClass:
                 # If the table does not exist, create it
                 try:
                     cursor.execute(
-                        f'CREATE TABLE "{table_name}" AS SELECT * FROM spotify_data_songs WHERE genre = %s',
-                        (genre,),
+                        f'CREATE TABLE "{table_name}" (LIKE spotify_data_songs INCLUDING ALL)',
+                    )
+                    cursor.execute(
+                        f'ALTER TABLE "{table_name}" ADD CONSTRAINT "{table_name}_unique_track_id" UNIQUE (track_id)',
                     )
                     self.conn.commit()  # Commit after creating table
                     print(f"Created table for genre {genre}.")
@@ -651,20 +647,21 @@ class SpotifyClass:
                     print(f"Failed to create table for genre {genre}. Error: {e}")
                     self.conn.rollback()
 
-            # Insert the songs into the table, avoiding duplicate entries
-            values = [
-                tuple(str(song[column])[:255] for column in columns) for song in songs
-            ]  # Truncate the string to 255 characters
-            insert_sql = f'INSERT INTO "{table_name}" VALUES ({", ".join(["%s"] * len(values[0]))}) ON CONFLICT DO NOTHING'
-            try:
-                cursor.executemany(insert_sql, values)
-                self.conn.commit()  # Commit after inserting songs
-                print(f"Inserted songs into table for genre {genre}.")
-            except Exception as e:
-                print(
-                    f"Failed to insert songs into table for genre {genre}. Error: {e}"
-                )
-                self.conn.rollback()
+                # Insert the songs into the table, updating existing songs
+                values = [
+                    tuple(str(song[column])[:255] for column in columns)
+                    for song in songs
+                ]  # Truncate the string to 255 characters
+                insert_sql = f'INSERT INTO "{table_name}" VALUES ({", ".join(["%s"] * len(values[0]))}) ON CONFLICT (track_id) DO UPDATE SET {", ".join([f"{column} = EXCLUDED.{column}" for column in columns])}'
+                try:
+                    cursor.executemany(insert_sql, values)
+                    self.conn.commit()  # Commit after inserting songs
+                    print(f"Inserted songs into table for genre {genre}.")
+                except Exception as e:
+                    print(
+                        f"Failed to insert songs into table for genre {genre}. Error: {e}"
+                    )
+                    self.conn.rollback()
 
         print("Finished committing changes to the database.")
 
