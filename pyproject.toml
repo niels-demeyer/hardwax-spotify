@@ -1,0 +1,15 @@
+[project]
+name = "hardwax-spotify"
+version = "0.1.0"
+description = "Scrape Hardwax record store and create Spotify playlists by genre"
+requires-python = ">=3.10"
+dependencies = [
+    "scrapy",
+    "psycopg2-binary",
+    "spotipy",
+    "requests",
+    "python-dotenv",
+    "fuzzywuzzy",
+    "python-Levenshtein",
+    "flask",
+]
