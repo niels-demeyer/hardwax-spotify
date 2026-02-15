@@ -1,23 +1,19 @@
 import os
-from pathlib import Path
-from dotenv import load_dotenv
-import pprint
-import psycopg2
-from psycopg2.extras import DictCursor
-import base64
-import json
-from requests import post, get
-import time
-from fuzzywuzzy import fuzz
-from typing import List, Optional, Dict, Any
-from requests import post, get, put
-from datetime import datetime
-from psycopg2 import sql, OperationalError
-import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
-import re
-from datetime import datetime
 import csv
+import re
+import time
+import unicodedata
+from datetime import datetime
+from pathlib import Path
+from typing import List, Dict, Any
+
+import psycopg2
+import spotipy
+from dotenv import load_dotenv
+from fuzzywuzzy import fuzz
+from psycopg2 import sql, OperationalError
+from psycopg2.extras import DictCursor, execute_values
+from spotipy.oauth2 import SpotifyOAuth
 
 
 class SpotifyClass:
@@ -76,56 +72,19 @@ class SpotifyClass:
             if cur is not None:
                 cur.close()
 
-    def search_artist(self, artist_name: str) -> Dict[str, Any]:
-        """
-        Search for an artist on Spotify.
-        """
-        try:
-            result = self.sp.search(q=artist_name, type="artist")
-            return result
-        except Exception as e:
-            print(f"Error in searching artist: {e}")
-
-    def damerau_levenshtein_distance(self, s1, s2):
-        """
-        Calculate the Damerau–Levenshtein distance between two strings.
-        """
-        len_s1 = len(s1)
-        len_s2 = len(s2)
-        d = [[0] * (len_s2 + 1) for _ in range(len_s1 + 1)]
-
-        for i in range(len_s1 + 1):
-            d[i][0] = i
-        for j in range(len_s2 + 1):
-            d[0][j] = j
-
-        for i in range(1, len_s1 + 1):
-            for j in range(1, len_s2 + 1):
-                cost = 0 if s1[i - 1] == s2[j - 1] else 1
-                d[i][j] = min(
-                    d[i - 1][j] + 1,  # deletion
-                    d[i][j - 1] + 1,  # insertion
-                    d[i - 1][j - 1] + cost,  # substitution
-                )
-                if (
-                    i > 1
-                    and j > 1
-                    and s1[i - 1] == s2[j - 2]
-                    and s1[i - 2] == s2[j - 1]
-                ):
-                    d[i][j] = min(d[i][j], d[i - 2][j - 2] + cost)  # transposition
-
-        return d[len_s1][len_s2]
-
-    def are_strings_similar(self, s1, s2, threshold):
-        """
-        Compare if two strings are similar based on a threshold.
-        """
-        distance = self.damerau_levenshtein_distance(s1, s2)
-        if distance <= threshold:
-            return True
-        else:
-            return False
+    @staticmethod
+    def _normalize(text: str) -> str:
+        """Normalize a string for better Spotify search matching."""
+        # Decompose unicode and strip accent marks
+        text = unicodedata.normalize("NFKD", text)
+        text = "".join(c for c in text if not unicodedata.combining(c))
+        # Remove parenthetical suffixes like (Deluxe Edition), (Remaster), (12")
+        text = re.sub(r"\s*\(.*?\)\s*", " ", text)
+        # Remove bracketed suffixes like [Remastered]
+        text = re.sub(r"\s*\[.*?\]\s*", " ", text)
+        # Collapse whitespace
+        text = re.sub(r"\s+", " ", text).strip()
+        return text
 
     def ensure_spotify_data_table_exists(self):
         try:
@@ -254,38 +213,73 @@ class SpotifyClass:
         except Exception as e:
             print("Error in get_unique_music_albums:", e)
 
+    def _find_best_match(self, items, album: str, artist: str, threshold: int = 70):
+        """Score search results and return the best match above the threshold."""
+        norm_album = self._normalize(album).lower()
+        norm_artist = self._normalize(artist).lower()
+        best, best_score = None, 0
+        for item in items:
+            result_album = self._normalize(item["name"]).lower()
+            result_artist = self._normalize(item["artists"][0]["name"]).lower()
+            score = (fuzz.ratio(norm_album, result_album) + fuzz.ratio(norm_artist, result_artist)) / 2
+            if score > best_score:
+                best, best_score = item, score
+        if best_score >= threshold:
+            return best, best_score
+        return None, best_score
+
     def search_album(self) -> Dict[str, Any]:
         """
-        Search for an album on Spotify by its name and artist, and returns the artist_uri and album_uri
+        Search for an album on Spotify by its name and artist, and returns the artist_uri and album_uri.
+        Uses fuzzy matching to validate results and a fallback broad search.
+        Batches DB writes for performance.
         """
+        not_found = []
+        checked_ids = []
+        batch_size = 50
+
         for music_album in self.music_albums_unique:
             album = music_album["album"]
             artist = music_album["artist"]
-            album_id = music_album["id"]  # assuming your dictionary includes the id
-            not_found = []
+            album_id = music_album["id"]
+            norm_album = self._normalize(album)
+            norm_artist = self._normalize(artist)
+
             while True:
                 try:
+                    # Primary search using Spotify field syntax
                     results = self.sp.search(
-                        q=f"album:{album} artist:{artist}", type="album", market="BE"
+                        q=f"album:{norm_album} artist:{norm_artist}", type="album", market="BE"
                     )
-                    print(f"Searching for album: {album} by {artist}")
-                    if results["albums"]["items"]:
-                        album_uri = results["albums"]["items"][0]["uri"]
-                        artist_uri = results["albums"]["items"][0]["artists"][0]["uri"]
+                    match, score = self._find_best_match(results["albums"]["items"], album, artist)
+
+                    # Fallback: broad search without field syntax
+                    if match is None:
+                        results = self.sp.search(
+                            q=f"{norm_artist} {norm_album}", type="album", market="BE"
+                        )
+                        match, score = self._find_best_match(results["albums"]["items"], album, artist)
+
+                    if match is not None:
                         music_album_with_uri = {
                             **music_album,
-                            "album_uri": album_uri,
-                            "artist_uri": artist_uri,
+                            "album_uri": match["uri"],
+                            "artist_uri": match["artists"][0]["uri"],
                         }
                         self.album_results.append(music_album_with_uri)
-                        print(f"Album found: {album} by {artist}")
-                        self.save_to_database_album()
-                        # self.save_to_json()
+                        print(f"Album found (score {score:.0f}): {album} by {artist}")
                     else:
-                        not_found.append((album, artist))  # append as a tuple
+                        not_found.append((album, artist))
                         print(f"Album not found: {album} by {artist}")
-                        self.save_to_csv(input_data=not_found)
-                    self.update_checked_status("music_albums_unique", album_id)
+
+                    checked_ids.append(album_id)
+
+                    # Batch flush every batch_size albums
+                    if len(checked_ids) >= batch_size:
+                        self.save_to_database_album()
+                        self._batch_update_checked("music_albums_unique", checked_ids)
+                        checked_ids.clear()
+
                     break
                 except spotipy.exceptions.SpotifyException as e:
                     if e.http_status == 429:
@@ -294,59 +288,71 @@ class SpotifyClass:
                         continue
                     else:
                         print(f"Error occurred while searching for album: {e}")
+                        break
+
+        # Final flush for remaining items
+        if checked_ids:
+            self.save_to_database_album()
+            self._batch_update_checked("music_albums_unique", checked_ids)
+        if not_found:
+            self.save_to_csv(not_found)
 
     def search_track(self, spotify_data_albums):
         """
-        Search for all the tracks in the albums that we have
+        Search for all the tracks in the albums that we have.
+        Batches checked-status updates for performance.
         """
-        errors = []  # List to store any errors that occur
-        for i, album in enumerate(spotify_data_albums):
-            # Stop after 50 albums
-            if i >= 2000:
-                break
+        errors = []
+        checked_ids = []
 
+        for album in spotify_data_albums:
             album_uri = album["album_uri"]
-            artist_uri = album["artist_uri"]
 
-            # Extract the IDs from the URIs
+            # Extract the album ID from the URI
             album_id_match = re.search(r"spotify:album:(\w+)", album_uri)
-            artist_id_match = re.search(r"spotify:artist:(\w+)", artist_uri)
+            if not album_id_match:
+                continue
 
-            if album_id_match and artist_id_match:
-                album_id = album_id_match.group(1)
+            spotify_album_id = album_id_match.group(1)
 
-                try:
-                    # Get the tracks of the album
-                    tracks = self.get_album_tracks(album_id)
-                    print(f"Searching for tracks in album {album_id}")
+            try:
+                tracks = self.get_album_tracks(spotify_album_id)
+                print(f"Fetched {len(tracks)} tracks from album {spotify_album_id}")
+                album["searched_tracks"] = tracks
+                checked_ids.append(album["id"])
 
-                    # Add the tracks to the album dictionary
-                    album["searched_tracks"] = tracks
-
-                    # Update the checked status
-                    self.update_checked_status("spotify_data_albums", album["id"])
-                except Exception as e:
-                    # If an error occurs, add it to the errors list
+                if len(checked_ids) >= 50:
+                    self._batch_update_checked("spotify_data_albums", checked_ids)
+                    checked_ids.clear()
+            except spotipy.exceptions.SpotifyException as e:
+                if e.http_status == 429:
+                    print("Rate limit exceeded. Waiting...")
+                    time.sleep(int(e.headers["Retry-After"]))
+                else:
                     errors.append(str(e))
+            except Exception as e:
+                errors.append(str(e))
+
+        if checked_ids:
+            self._batch_update_checked("spotify_data_albums", checked_ids)
 
         return spotify_data_albums, errors
 
     def get_album_tracks(self, album_id):
         """
-        Get the tracks of an album
+        Get all tracks of an album, handling pagination for albums with >50 tracks.
         """
-        try:
-            # Get the album's tracks
-            results = self.sp.album_tracks(album_id)
-
-            # Extract the track name and ID from each track
-            tracks = [
+        tracks = []
+        results = self.sp.album_tracks(album_id)
+        tracks.extend(
+            {"name": track["name"], "id": track["id"]} for track in results["items"]
+        )
+        while results["next"]:
+            results = self.sp.next(results)
+            tracks.extend(
                 {"name": track["name"], "id": track["id"]} for track in results["items"]
-            ]
-
-            return tracks
-        except Exception as e:
-            print(f"Error occurred while getting tracks for album {album_id}: {e}")
+            )
+        return tracks
 
     def make_spotify_data_songs_table(self):
         """
@@ -375,41 +381,43 @@ class SpotifyClass:
 
     def save_to_spotify_data_songs(self, spotify_data_albums):
         """
-        Save the track results to the database.
+        Save the track results to the database using batch inserts.
         """
         try:
-            with self.conn.cursor() as cur:
-                self.make_spotify_data_songs_table()
-                for album in spotify_data_albums:
-                    if "searched_tracks" in album:
-                        artist = album.get("artist", None)
-                        album_name = album.get("album", None)
-                        artist_uri = album.get("artist_uri", None)
-                        album_uri = album.get("album_uri", None)
-                        id = album.get("id", None)
-                        for track in album["searched_tracks"]:
-                            track_name = track.get("name", None)
-                            track_id = track.get("id", None)
-
-                            cur.execute(
-                                sql.SQL(
-                                    """
-                                    INSERT INTO spotify_data_songs (id, track, track_id, artist, album, album_uri, artist_uri)
-                                    VALUES (%s, %s, %s, %s, %s, %s, %s)
-                                    ON CONFLICT (track_id) DO NOTHING;
-                                    """
-                                ),
-                                (
-                                    id,
-                                    track_name,
-                                    track_id,
-                                    artist,
-                                    album_name,
-                                    album_uri,
-                                    artist_uri,
-                                ),
-                            )
+            self.make_spotify_data_songs_table()
+            rows = []
+            for album in spotify_data_albums:
+                if "searched_tracks" not in album:
+                    continue
+                artist = album.get("artist")
+                album_name = album.get("album")
+                artist_uri = album.get("artist_uri")
+                album_uri = album.get("album_uri")
+                album_id = album.get("id")
+                for track in album["searched_tracks"]:
+                    rows.append((
+                        album_id,
+                        track.get("name"),
+                        track.get("id"),
+                        artist,
+                        album_name,
+                        album_uri,
+                        artist_uri,
+                    ))
+            if rows:
+                with self.conn.cursor() as cur:
+                    execute_values(
+                        cur,
+                        """
+                        INSERT INTO spotify_data_songs (id, track, track_id, artist, album, album_uri, artist_uri)
+                        VALUES %s
+                        ON CONFLICT (track_id) DO NOTHING
+                        """,
+                        rows,
+                        page_size=500,
+                    )
                 self.conn.commit()
+                print(f"Inserted {len(rows)} tracks into spotify_data_songs")
         except Exception as e:
             print(f"Error in saving to database: {e}")
 
@@ -426,36 +434,38 @@ class SpotifyClass:
 
     def reset_not_found(self, album_ids):
         """
-        Resets the album in music_albums_unique to False for albums that are not found
+        Resets the album in music_albums_unique to False for albums that are not found.
         """
+        if not album_ids:
+            return
         try:
             cur = self.conn.cursor()
-            # Convert the list of IDs to a string of comma-separated values
-            ids_str = ",".join(map(str, album_ids))
             cur.execute(
-                f"""
-                UPDATE music_albums_unique SET checked = False WHERE id NOT IN ({ids_str})
-                """
+                "UPDATE music_albums_unique SET checked = False WHERE id != ALL(%s)",
+                (album_ids,),
             )
             self.conn.commit()
         except Exception as e:
             print("Error in reset_not_found:", e)
 
-    def update_checked_status(self, table, album_id):
+    def _batch_update_checked(self, table: str, album_ids: list):
         """
-        Update the checked status of an album in the music_albums_unique table
+        Batch-update checked status for multiple albums in one query.
         """
+        if not album_ids:
+            return
+        allowed_tables = {"music_albums_unique", "spotify_data_albums"}
+        if table not in allowed_tables:
+            raise ValueError(f"Invalid table name: {table}")
         try:
             cur = self.conn.cursor()
             cur.execute(
-                f"""
-                UPDATE {table} SET checked = True WHERE id = %s
-                """,
-                (album_id,),
+                f"UPDATE {table} SET checked = True WHERE id = ANY(%s)",
+                (album_ids,),
             )
             self.conn.commit()
         except Exception as e:
-            print("Error in update_checked_status:", e)
+            print(f"Error in _batch_update_checked: {e}")
 
     def save_to_csv(self, input_data: List[tuple[str, str]]):
         """
