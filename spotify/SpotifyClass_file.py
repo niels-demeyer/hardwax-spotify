@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 import pprint
 import psycopg2
@@ -21,7 +22,7 @@ import csv
 
 class SpotifyClass:
     def __init__(self):
-        load_dotenv()
+        load_dotenv(Path(__file__).resolve().parent.parent / ".env")
         # load the environment variables for the database
         self.dbname = os.getenv("DB_NAME")
         self.dbuser = os.getenv("DB_USER")
@@ -43,9 +44,9 @@ class SpotifyClass:
             print(f"The error '{e}' occurred")
 
         # load the environment variables for the spotipy library
-        self.spotipy_client_id = os.getenv("SPOTIPY_CLIENT")
-        self.spotipy_client_secret = os.getenv("SPOTIPY_SECRET")
-        self.spotipy_redirect_uri = "https://localhost:8085"
+        self.spotipy_client_id = os.getenv("CLIENT_ID")
+        self.spotipy_client_secret = os.getenv("CLIENT_SECRET")
+        self.spotipy_redirect_uri = "https://127.0.0.1:8085"
         self.auth_manager = SpotifyOAuth(
             client_id=self.spotipy_client_id,
             client_secret=self.spotipy_client_secret,

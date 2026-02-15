@@ -7,10 +7,11 @@
 # useful for handling different item types with a single interface
 import psycopg2
 from scrapy.exceptions import DropItem
+from pathlib import Path
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
+load_dotenv(Path(__file__).resolve().parent.parent.parent / ".env")
 
 host = os.getenv("DB_HOST")
 user = os.getenv("DB_USER")

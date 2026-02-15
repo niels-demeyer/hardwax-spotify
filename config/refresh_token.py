@@ -1,10 +1,11 @@
 import webbrowser
 import requests
 from flask import Flask, request
+from pathlib import Path
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
+load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
 # You should replace these placeholders with your actual Spotify client values
 CLIENT_ID = os.getenv("CLIENT_ID")
